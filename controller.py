@@ -1,0 +1,84 @@
+from database.tasks import *
+from datetime import datetime,timedelta,date,time
+import json
+
+#нужно
+
+#добавить задачу в очередь, когда истечет - прислать напоминалку и продлить на день
+def add_task_to_celery(task,task_id):
+    deadline = datetime.strptime(task['deadline'],"%d.%m.%Y %H:%M") #01.01.2025 23:59
+    deadline_come_out.apply_async(args=[task,task_id],eta=deadline)
+
+#устанавливать напоминания для определенной задачи - добавить напоминалку в очередь
+def set_reminder(chat_id,deadline_str,text):
+    deadline = datetime.strptime(deadline_str,"%d.%m.%Y %H:%M")
+    send_remind.apply_async(args=[text,chat_id],eta=deadline)
+
+#напоминать за некоторое время до дд о задаче
+def remind_about_task(task,task_id):
+    deadline = datetime.strptime(task['deadline'],"%d.%m.%Y %H:%M") #01.01.2025 23:59
+    remind_dd = deadline - timedelta(hours=3)
+    remind_about_task.apply_async(args=[task,task_id],eta=remind_dd)
+
+#добавить задачу - функция добавления одной задачи, функционал тот же, что и выше
+def add_one_task(task):
+    result = add_task.delay(task)
+    task_id = result.get()
+    add_task_to_celery(task,task_id)
+
+#составить список дел - функция добавления нескольких задач, внутри также в очередь добавляется счетчик до дд каждой задачи
+def add_tasks_list(tasks_arr):
+    result = add_tasks.delay(tasks_arr)
+    tasks_ids = result.get()
+    for i in range(len(tasks_arr)):
+        add_task_to_celery(tasks_arr[i],tasks_ids[i])
+
+#поставить задачу выполненной - обновить ее в бд и снять с очереди
+def set_checked(task_id):
+    update_task.delay(task_id,{'checked':True})
+
+#изменить текст задачи - обновить ее в бд
+def edit_text(task_id,text):
+    update_task.delay(task_id,{'description':text})
+
+#удалять все задачи на определенную дату
+def delete_on_date(date,chat_id):
+    delete_task_date.delay(date,chat_id)
+
+#удалять определенные задачи на дату
+def delete_concrete_task(tasks_arr):
+    delete_many_tasks.delay(tasks_arr)
+
+#выводить задачи с оставшимся временем до них
+def get_all_tasks(chat_id):
+    result = read_tasks.delay(chat_id)
+    tasks_str = result.get()
+    if tasks_str=="":return
+    tasks = json.loads(tasks_str)
+
+    res_str = ""
+    i = 1
+    for task in tasks:
+        res_str+=f"{i}. {task['description']}\n\tВремени осталось - "
+        deadline = datetime.strptime(task['deadline'],"%d.%m.%Y %H:%M")
+        time_left = deadline - datetime.now()
+        res_str+=str(time_left)+"\n"
+        i+=1
+    return res_str
+
+#выводить задачи на определенную дату
+def get_date_tasks(date,chat_id):
+    result = read_date_tasks.delay(date,chat_id)
+    tasks_str = result.get()
+    if tasks_str=="":return
+    tasks = json.loads(tasks_str)
+
+    res_str = ""
+    i = 1
+    for task in tasks:
+        res_str+=f"{i}. {task['description']}\n\tВремени осталось - "
+        deadline = datetime.strptime(task['deadline'],"%d.%m.%Y %H:%M")
+        time_left = deadline - datetime.now()
+        res_str+=str(time_left)+"\n"
+        i+=1
+    return res_str

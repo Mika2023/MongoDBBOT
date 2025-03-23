@@ -15,6 +15,17 @@ def start(message):
 def start(message):
     bot.send_message(message.chat.id,"")
 
+def dd_run_out(chat_id, task):
+    task_desc = task['description']
+    bot.send_message(chat_id,f"Кажется, ваша задача <i>{task_desc}</i> истекла...\nНичего страшного, она продлена на 1 день, но кое-кому пора ее выполнить!",parse_mode="HTML")
+
+def send_reminder(text,chat_id):
+    bot.send_message(chat_id,f"Помнится, некоторое время назад вы сказали сами себе\n\n<b>{text}</b>\n\nПора выполнить обещание!",parse_mode="HTML")
+
+def remind_task(chat_id,task):
+    task_desc = task['description']
+    bot.send_message(chat_id,f"До дедлайна вашей задачи <i>{task_desc}</i> осталось всего 3 часа\nЗнайте, рак на горе уже свистнул, самое время взяться за дело!",parse_mode="HTML")
+
 app = Flask(__name__)
 
 @app.route(f'/{mytoken}', methods=['POST'])
