@@ -135,7 +135,7 @@ def read_task(task_id):
     print(redis_client.type(redis_key))
 
     # Попытка получить данные из Redis
-    cached_data = redis_client.hgetall(hash(redis_key))
+    cached_data = redis_client.hgetall(redis_key)
     if cached_data:
         print("Данные получены из Redis")
         return cached_data.decode('utf-8')  # Данные в Redis хранятся в виде строки
