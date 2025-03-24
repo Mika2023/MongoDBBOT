@@ -30,7 +30,7 @@ def set_reminder(chat_id,deadline_str,text):
     send_remind.apply_async(args=[text,chat_id],eta=deadline)
 
 #напоминать за некоторое время до дд о задаче
-def remind_about_task(task,task_id):
+def remind_tasks(task,task_id):
     deadline = datetime.strptime(task['deadline'],"%d.%m.%Y %H:%M") #01.01.2025 23:59
     remind_dd = deadline - timedelta(hours=3)
     remind_about_task.apply_async(args=[task,task_id],eta=remind_dd)
@@ -40,7 +40,7 @@ def add_one_task(task):
     result = add_task.delay(task)
     task_id = result.get()
     add_task_to_celery(task,task_id)
-    remind_about_task(task,task_id)
+    remind_tasks(task,task_id)
 
 #составить список дел - функция добавления нескольких задач, внутри также в очередь добавляется счетчик до дд каждой задачи
 def add_tasks_list(tasks_arr):
@@ -49,7 +49,7 @@ def add_tasks_list(tasks_arr):
     if tasks_ids==None: return False 
     for i in range(len(tasks_arr)):
         add_task_to_celery(tasks_arr[i],tasks_ids[i])
-        remind_about_task(tasks_arr[i],tasks_ids[i])
+        remind_tasks(tasks_arr[i],tasks_ids[i])
     return True
 
 
