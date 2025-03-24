@@ -52,6 +52,15 @@ def set_reminder_text(message):
     if res: bot.send_message(message.chat.id,"Аааага, запомнилось!\n<i>Вы получать +15 социальных кредитов и кошка жену за это</i>",parse_mode="HTML")
     else: bot.send_message(message.chat.id,"Плакать охота, что-то пошло не так, повторите позже)")
 
+@bot.message_handler(commands=["get_all_tasks"])
+def print_all_tasks(message):
+    res = get_all_tasks(message.chat.id)
+    if res=="":
+        bot.send_message(message.chat.id,"<i>О-Оуууууу...</i>\nУ вас нет никаких задач. Плохо это или хорошо?",parse_mode="HTML")
+        return
+    res = "Вы просили, мы сделали)\nВот список всех ваших задач:\n"+res
+    bot.send_message(message.chat.id,res,parse_mode="HTML")
+
 def dd_run_out(chat_id, task):
     task_desc = task['description']
     bot.send_message(chat_id,f"Кажется, ваша задача <i>{task_desc}</i> истекла...\nНичего страшного, она продлена на 1 день, но кое-кому пора ее выполнить!",parse_mode="HTML")

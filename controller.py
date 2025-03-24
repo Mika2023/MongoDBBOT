@@ -94,18 +94,21 @@ def delete_concrete_task(tasks_nums):
 def get_all_tasks(chat_id):
     result = read_tasks.delay(chat_id)
     tasks_str = result.get()
-    if tasks_str=="":return
-    tasks = json.loads(tasks_str)
+    if tasks_str==None:return ""
+    tasks = decode_redis_data(tasks_str)
+    #tasks = json.loads(tasks_str)
 
     tasks_ids_arr.clear()
     res_str = ""
     i = 1
     tasks_ids_arr.clear()
     for task in tasks:
-        res_str+=f"{i}. {task['description']}\n\tВремени осталось - "
-        deadline = datetime.strptime(task['deadline'],"%d.%m.%Y %H:%M")
-        time_left = deadline - datetime.now()
-        res_str+=str(time_left)+"\n"
+        if task['checked']=='False': 
+            res_str+=f"{i}. {task['description']}\n\tВремени осталось - "
+            deadline = datetime.strptime(task['deadline'],"%d.%m.%Y %H:%M")
+            time_left = deadline - datetime.now()
+            res_str+=str(time_left)+"\n"
+        else: res_str+=f"{i}. <s>{task['description']}</s>"
         tasks_ids_arr.append({i:task['task'] if task['task'] else task['_id']})
         i+=1
     return res_str
