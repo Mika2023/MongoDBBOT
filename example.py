@@ -1,14 +1,14 @@
 import time
 from database.tasks import add_tasks,read_tasks,add_task,update_task,send_remind,remind_about_task
 from bot import remind_task
-from controller import get_all_tasks
+from controller import get_date_tasks
 data = [
     {'description': 'go to the darkness', 'deadline': '27.02.2025', 'chat_id': 123455},
     {'description': 'go to the sky', 'deadline': '01.02.2025', 'chat_id': 123455},
     {'description': 'go', 'deadline': '22.03.2025', 'chat_id': 987532}
 ]
 
-print(get_all_tasks(1494200750))
+print(get_date_tasks("25.03.2025",1494200750))
 # data = {'description': 'go to the darkness', 'deadline': '27.02.2025', 'chat_id': 123455}
 
 # res = add_tasks.delay(data)

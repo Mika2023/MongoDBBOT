@@ -1,5 +1,6 @@
 
 # from database.celery_bot import app
+import json
 from pymongo import MongoClient
 import redis
 from bson.objectid import ObjectId  # для idшников в бд
@@ -153,10 +154,16 @@ def read_task(task_id):
 
 def read_date_tasks(date,chat_id):
     redis_key = f"task:{date}:{chat_id}"
-    cached_data = redis_client.get(redis_key)
-    if cached_data:
-        print("Данные получены из Redis")
-        return cached_data.decode('utf-8')
+    tasks = []
+    
+    for key in redis_client.scan_iter("task:*"):
+        task = redis_client.hgetall(key)
+        task_dict = {}
+        for key_task,value in task.items():
+            task_dict[key_task.decode('utf-8')] = value.decode('utf-8')
+        if task_dict['deadline'].startswith(date):
+            tasks.append(task_dict)
+    if tasks: return tasks
     
     results = list(tasks_collection.find({"&and":[{'deadline':date},{'chat_id':chat_id}]}))
     if results:

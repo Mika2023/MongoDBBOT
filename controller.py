@@ -123,12 +123,12 @@ def get_date_tasks(date,chat_id):
     result = read_tasks_on_date.delay(date,chat_id)
     tasks_str = result.get()
     if tasks_str==None:return ""
-    tasks = decode_redis_arr_dict(tasks_str)
+    # tasks = decode_redis_arr_dict(tasks_str)
 
     res_str = ""
     i = 1
     tasks_ids_arr.clear()
-    for task in tasks:
+    for task in tasks_str:
         if task['checked']=='False': 
             res_str+=f"{i}. {task['description']}\n\t\tВремени осталось - "
             try:
