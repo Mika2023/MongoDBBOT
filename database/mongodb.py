@@ -35,7 +35,7 @@ def add_many_tasks_to_mongodb(data):
         insert_id = result.inserted_ids
         # Сохранение данных в Redis
         for i, task_id in enumerate(insert_id):
-            redis_key = f"task:{task_id}"
+            redis_key = f"task:{str(task_id)}"
             task_data = data[i].copy()  # Создаём копию данных
             task_data['_id'] = str(task_id)  # Добавляем ID в данные
             redis_client.hset(redis_key, mapping=task_data)  # Сохраняем данные в Redis
