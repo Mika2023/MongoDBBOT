@@ -117,6 +117,7 @@ def get_all_tasks(chat_id):
         else: res_str+=f"{i}. <s>{task['description']}</s>\n"
         tasks_ids_arr.append({i:task.get('_id')})
         i+=1
+    print(tasks_ids_arr)
     return res_str
 
 #выводить задачи на определенную дату
