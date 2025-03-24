@@ -129,7 +129,7 @@ def read_data(chat_id):
         task_dict = {}
         for key_task,value in task.items():
             task_dict[key_task.decode('utf-8')] = value.decode('utf-8')
-        if task_dict['chat_id']==chat_id:
+        if 'chat_id' in task_dict and task_dict['chat_id'] == chat_id:
             tasks.append(task_dict)
     if tasks: return tasks  # Данные в Redis хранятся в виде строки
 
