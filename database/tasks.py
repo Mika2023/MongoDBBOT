@@ -41,7 +41,7 @@ def deadline_come_out(task_id):
 
     task_str = read_task(task_id)
     if task_str==None: return #если ничего нет
-    task = json.loads(task_str)
+    # task = json.loads(task_str)
     if task['checked']=='True': return #если задача выполнена
 
     deadline = datetime.strptime(task['deadline'],"%d.%m.%Y %H:%M")
@@ -60,7 +60,7 @@ def send_remind(text,chat_id):
 def remind_about_task(task,task_id):
     task_str = read_task(task_id)
     if task_str==None: return #если ничего нет
-    task = json.loads(task_str)
+    # task = json.loads(task_str)
     if task['checked']=='True': return #если задача выполнена
 
     from bot import remind_task
