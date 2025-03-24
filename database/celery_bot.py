@@ -2,8 +2,8 @@ from celery import Celery
 
 app = Celery(
     'celery_bot',
-    broker='redis://127.0.0.1:6379/0',
-    backend='redis://127.0.0.1:6379/0',
+    broker='redis://default:AaA5AAIjcDFhZjYxZmRhYzYxMDA0NGE0YmNkZTQ5NDU4MjNkYWZkZnAxMA@fast-crawdad-41017.upstash.io:6379/0',
+    backend='redis://default:AaA5AAIjcDFhZjYxZmRhYzYxMDA0NGE0YmNkZTQ5NDU4MjNkYWZkZnAxMA@fast-crawdad-41017.upstash.io:6379/0',
     include=['database.tasks']
 )
 

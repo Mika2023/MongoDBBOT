@@ -10,7 +10,12 @@ db = mongo_client['TelegramBotDB']
 tasks_collection = db['tasks']
 
 # Подключение к Redis
-redis_client = redis.Redis(host='127.0.0.1', port=6379, db=0)
+redis_client = redis.Redis(
+  host='fast-crawdad-41017.upstash.io',
+  port=6379,
+  password='AaA5AAIjcDFhZjYxZmRhYzYxMDA0NGE0YmNkZTQ5NDU4MjNkYWZkZnAxMA',
+  ssl=True
+)
 
 # insert
 # @app.task
