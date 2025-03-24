@@ -132,6 +132,10 @@ def read_data(chat_id):
 def read_task(task_id):
     redis_key = f"task:{task_id}"
 
+    if redis_client.type(redis_key) != "hash":
+        redis_client.delete(redis_key)  # Удаляем битый ключ
+        return None
+
     # Попытка получить данные из Redis
     cached_data = redis_client.hgetall(redis_key)
     if cached_data:
