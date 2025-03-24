@@ -61,6 +61,7 @@ def remind_about_task(task,task_id):
     task_str = read_task(task_id)
     if task_str==None: return #если ничего нет
     # task = json.loads(task_str)
+    print(task_str,type(task_str))
     if task_str['checked']=='True': return #если задача выполнена
 
     from ..bot import remind_task
