@@ -64,20 +64,20 @@ def deadline_come_out(task_id):
 
 @app.task
 def send_remind(text,chat_id):
-    from ..bot import send_reminder
+    from bot import send_reminder
     send_reminder(text,chat_id)
 
 @app.task
-def remind_about_task(task,task_id):
+def remind_about_task(task_id):
     task_str = read_task(task_id)
     if task_str==None: return #если ничего нет
     # task = json.loads(task_str)
     task = decode_redis_data(task_str)
     if task['checked']=='True': return #если задача выполнена
 
-    import bot
+    from bot import remind_task
     chat_id = task['chat_id']
-    bot.remind_task(task,chat_id)
+    remind_task(task,chat_id)
 
 @app.task
 def read_tasks_on_date(date,chat_id):
