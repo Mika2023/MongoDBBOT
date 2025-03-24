@@ -65,7 +65,7 @@ def remind_about_task(task,task_id):
 
     from bot import remind_task
     chat_id = task['chat_id']
-    remind_task(task,task_id)
+    remind_task(task,chat_id)
 
 @app.task
 def read_tasks_on_date(date,chat_id):
