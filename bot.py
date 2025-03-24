@@ -106,7 +106,7 @@ def edit_text_task(message):
         bot.send_message(message.chat.id,"Кажется, вы написали не тот формат(")
         return
     
-    edit_text(dif_text[0],dif_text[1])
+    edit_text(int(dif_text[0]),dif_text[1])
     bot.send_message(message.chat.id,"Задача успешно отредактирована!")
 
 
