@@ -138,7 +138,7 @@ def delete_task_bot_num(message):
         bot.send_message(message.chat.id,"Кажется, вы написали не тот формат(")
         return
     
-    set_checked(int(dif_text[0]))
+    delete_concrete_task(int(dif_text[0]))
     bot.send_message(message.chat.id,"Выполнено, кэп!")
 
 
