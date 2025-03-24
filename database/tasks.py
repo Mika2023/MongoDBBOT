@@ -1,3 +1,4 @@
+from ast import literal_eval
 from database.celery_bot import app
 from database.mongodb import *
 import sys
@@ -50,14 +51,17 @@ def decode_redis_data(redis_dict):
 
 def decode_redis_arr_dict(redis_dict):
     """Преобразует список словарей с bytes-ключами и значениями в обычный arr."""
-    decoded = []
-    for item in redis_dict:
-        decoded = {}
-        for key,value in item.items():
-        # Декодируем ключ и значение из bytes в str
-            decoded[key.decode('utf-8')] = value.decode('utf-8')
-        decoded.append(decoded)
-    return decoded
+    """Ручной парсинг для особо сложных случаев"""
+    json_str = redis_dict.replace("'", '"')
+        
+        # Экранируем оставшиеся кавычки внутри строк
+    json_str = json_str.replace('": "', '": \\"').replace('", "', '\\", "')
+    try:    
+        return json.loads(json_str)
+    except json.JSONDecodeError:
+            # Вариант 2: Используем literal_eval как запасной вариант
+        return literal_eval(redis_dict)
+    
 
 
 @app.task
