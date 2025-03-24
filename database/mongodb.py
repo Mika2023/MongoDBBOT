@@ -136,7 +136,7 @@ def read_task(task_id):
     cached_data = redis_client.hgetall(redis_key)
     if cached_data:
         print("Данные получены из Redis")
-        return cached_data.decode('utf-8')  # Данные в Redis хранятся в виде строки
+        return cached_data  # Данные в Redis хранятся в виде строки
 
     # Если данных нет в Redis, загружаем из MongoDB
     results = list(tasks_collection.find({'task': task_id}))

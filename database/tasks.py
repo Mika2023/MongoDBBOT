@@ -40,7 +40,7 @@ def read_task_task(task_id):
 def deadline_come_out(task_id):
 
     task_str = read_task(task_id)
-    if task_str=="": return #если ничего нет
+    if task_str==None: return #если ничего нет
     task = json.loads(task_str)
     if task['checked']=='True': return #если задача выполнена
 
@@ -74,3 +74,4 @@ def read_tasks_on_date(date,chat_id):
 @app.task
 def read_description(description,chat_id):
     return read_desc_task(description,chat_id)
+
