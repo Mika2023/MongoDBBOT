@@ -121,7 +121,7 @@ def edit_checked(message):
         bot.send_message(message.chat.id,"Кажется, вы написали не тот формат(")
         return
     
-    set_checked(int(dif_text[0]),dif_text[1])
+    set_checked(int(dif_text[0]))
     bot.send_message(message.chat.id,"Выполнено, кэп!")
 
 
