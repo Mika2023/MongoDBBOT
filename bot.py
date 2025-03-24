@@ -91,9 +91,9 @@ def save_btn(call):
                                                      callback_data='change_text')
     button_checked = telebot.types.InlineKeyboardButton(text="Отметить выполненным",
                                                      callback_data='change_check')
-    button_checked = telebot.types.InlineKeyboardButton(text="Удалить",
+    button_delete = telebot.types.InlineKeyboardButton(text="Удалить",
                                                      callback_data='delete_task_bot')
-    keyboard.add(button_text,button_checked)
+    keyboard.add(button_text,button_checked,button_delete)
     bot.send_message(message.chat.id,"Что именно вы хотите изменить?",reply_markup=keyboard)
 
 @bot.callback_query_handler(func=lambda call: call.data == 'change_text')
