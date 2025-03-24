@@ -67,3 +67,7 @@ def remind_about_task(task,task_id):
 @app.task
 def read_tasks_on_date(date,chat_id):
     return read_date_tasks(date,chat_id)
+
+@app.task
+def read_description(description,chat_id):
+    return read_desc_task(description,chat_id)

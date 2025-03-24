@@ -77,8 +77,8 @@ def delete_tasks_on_date(date,chat_id):
 
     if result.deleted_count > 0:  # Используем deleted_count
         # Redis
-        redis_key = f"deadline:{date}"
-        redis_client.delete(redis_key,f"chat_id:{chat_id}")
+        redis_key = f"task:{date}:{chat_id}"
+        redis_client.delete(redis_key)
         print(f"Данные удалены в Redis для ключа: {redis_key}")
         return True
     else:
@@ -147,8 +147,8 @@ def read_task(task_id):
         return None
 
 def read_date_tasks(date,chat_id):
-    redis_key = f"deadline:{date}"
-    cached_data = redis_client.get(redis_key,f"chat_id:{chat_id}")
+    redis_key = f"task:{date}:{chat_id}"
+    cached_data = redis_client.get(redis_key)
     if cached_data:
         print("Данные получены из Redis")
         return cached_data.decode('utf-8')
@@ -164,6 +164,26 @@ def read_date_tasks(date,chat_id):
     else:
         print(f"Данные для date {date} не найдены.")
         return None
+    
+def read_desc_task(description,chat_id):
+    redis_key = f"task:{description}:{chat_id}"
+    cached_data = redis_client.get(redis_key)
+    if cached_data:
+        print("Данные получены из Redis")
+        return cached_data.decode('utf-8')
+    
+    results = tasks_collection.find_one({'description':description,'chat_id':chat_id})
+    if results:
+        print("Данные получены из MongoDB")
+
+        # Сохраняем данные в Redis
+        redis_client.set(redis_key, str(results))  # Сохраняем как строку
+
+        return results
+    else:
+        print(f"Данные для date {description} не найдены.")
+        return None
+
 # Пример использования
 # if __name__ == "__main__":
 #     # Добавление задач через Celery и ожидание их завершения
