@@ -116,7 +116,7 @@ def change_check(call):
     bot.register_next_step_handler(message,edit_checked)
 
 def edit_checked(message):
-    dif_text = message.text
+    dif_text = message.text.split()
     if len(dif_text)!=1:
         bot.send_message(message.chat.id,"Кажется, вы написали не тот формат(")
         return
