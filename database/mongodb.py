@@ -91,7 +91,7 @@ def delete_data_in_mongodb(task_id):
 
 #delete all tasks on date    
 def delete_tasks_on_date(date,chat_id):
-    result = tasks_collection.delete_many({"&and":[{'deadline':date},{'chat_id':chat_id}]})
+    result = tasks_collection.delete_many({'deadline':date,'chat_id':chat_id})
 
     if result.deleted_count > 0:  # Используем deleted_count
         # Redis

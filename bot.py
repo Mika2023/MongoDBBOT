@@ -142,6 +142,15 @@ def delete_task_bot_num(message):
     bot.send_message(message.chat.id,"Выполнено, кэп!")
 
 
+@bot.message_handler(commands=["delete_tasks_on_date"])
+def delete_tasks_on_date(message):
+    bot.send_message(message.chat.id,"Ждем от вас дату, напомню формат:\n<i>дд.мм.гггг</i>\nВсе просто)",parse_mode="HTML")
+    bot.register_next_step_handler(message,delete_tasks_on_date_date)
+
+def delete_tasks_on_date_date(message):
+    delete_on_date(message.text,message.chat_id)
+    bot.send_message(message.chat.id,f"Удалены все задачи на дату {message.text}")
+
 def dd_run_out(chat_id, task):
     task_desc = task['description']
     bot.send_message(chat_id,f"Кажется, ваша задача <i>{task_desc}</i> истекла...\nНичего страшного, она продлена на 1 день, но кое-кому пора ее выполнить!",parse_mode="HTML")
