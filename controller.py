@@ -73,6 +73,7 @@ def set_checked(task_num):
 #изменить текст задачи - обновить ее в бд
 def edit_text(task_num,text):
     task_id = ''
+    print(tasks_ids_arr)
     for item in tasks_ids_arr:
         if item[0]==task_num:
             task_id = item[1]

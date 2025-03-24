@@ -97,7 +97,7 @@ def save_btn(call):
 @bot.callback_query_handler(func=lambda call: call.data == 'change_text')
 def change_text(call):
     message = call.message
-    bot.send_message(message.chat.id,"Выберите номер задачи из списка выше и напишите исправленный текст\n<i>Формат</i>Номер задачи\nТекст",parse_mode="HTML")
+    bot.send_message(message.chat.id,"Выберите номер задачи из списка выше и напишите исправленный текст\n<i>Формат</i>\nНомер задачи\nТекст",parse_mode="HTML")
     bot.register_next_step_handler(message,edit_text_task)
 
 def edit_text_task(message):
