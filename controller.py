@@ -22,7 +22,7 @@ def get_task(description,chat_id):
 #добавить задачу в очередь, когда истечет - прислать напоминалку и продлить на день
 def add_task_to_celery(task,task_id):
     deadline = datetime.strptime(task['deadline'],"%d.%m.%Y %H:%M") #01.01.2025 23:59
-    deadline_come_out.apply_async(args=[task,task_id],eta=deadline)
+    deadline_come_out.apply_async(args=[task_id],eta=deadline)
 
 #устанавливать напоминания для определенной задачи - добавить напоминалку в очередь
 def set_reminder(chat_id,deadline_str,text):
