@@ -67,13 +67,13 @@ def get_tasks_on_date_bot(message):
     bot.register_next_step_handler(message,get_tasks_on_date_date)
 
 def get_tasks_on_date_date(message):
-    try:
+    # try:
         res = get_date_tasks(message.text,message.chat.id)
         res = f"Ваш список мечты на дату: {message.text}\n"+res
         bot.send_message(message.chat.id,res,parse_mode="HTML")
-    except:
-        bot.send_message(message.chat.id,"Вы неправильно ввели дату(\nОбязательно попробуйте снова!")
-        
+    # except Exception as e:
+    #     bot.send_message(message.chat.id,"Вы неправильно ввели дату(\nОбязательно попробуйте снова!")
+
 
 def dd_run_out(chat_id, task):
     task_desc = task['description']
