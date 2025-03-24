@@ -1,6 +1,6 @@
 from database.celery_bot import app
 from database.mongodb import *
-from ..bot import dd_run_out,send_reminder,remind_task
+from bot import dd_run_out,send_reminder,remind_task
 from datetime import datetime,timedelta,date,time
 import json
 
