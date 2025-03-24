@@ -48,6 +48,18 @@ def decode_redis_data(redis_dict):
         decoded[key.decode('utf-8')] = value.decode('utf-8')
     return decoded
 
+def decode_redis_arr_dict(redis_dict):
+    """Преобразует список словарей с bytes-ключами и значениями в обычный arr."""
+    decoded = []
+    for item in redis_dict:
+        decoded = {}
+        for key,value in item.items():
+        # Декодируем ключ и значение из bytes в str
+            decoded[key.decode('utf-8')] = value.decode('utf-8')
+        decoded.append(decoded)
+    return decoded
+
+
 @app.task
 def deadline_come_out(task_id):
 

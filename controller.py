@@ -95,7 +95,7 @@ def get_all_tasks(chat_id):
     result = read_tasks.delay(chat_id)
     tasks_str = result.get()
     if tasks_str==None:return ""
-    tasks = decode_redis_data(tasks_str)
+    tasks = decode_redis_arr_dict(tasks_str)
     #tasks = json.loads(tasks_str)
 
     tasks_ids_arr.clear()
