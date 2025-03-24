@@ -36,6 +36,9 @@ def add_tasks_to_plan(message):
     if res: bot.send_message(message.chat.id,"Оооооо, очень крутые задачи, а еще...\n\nОни успешно добавлены!")
     else:bot.send_message(message.chat.id,"Какая-то хрень произошла с сервером, попробуйте снова пжпжпж")
 
+@bot.message_handler(commands=["set_reminder"])
+def set_reminder(message):
+    bot.send_message()
 
 
 def dd_run_out(chat_id, task):
