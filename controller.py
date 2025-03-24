@@ -72,14 +72,10 @@ def set_checked(task_num):
 
 #изменить текст задачи - обновить ее в бд
 def edit_text(task_num,text):
-    task_id = ''
-    print(tasks_ids_arr)
-    for item in tasks_ids_arr:
-        if item[0]==task_num:
-            task_id = item[1]
-            break
-    if task_id=='': return
-    update_task.delay(task_id,{'description':text})
+    description = tasks_ids_arr[task_num-1][1]
+    chat_id = tasks_ids_arr[task_num-1][2]
+    deadline = tasks_ids_arr[task_num-1][3]
+    update_task_params.delay(description,chat_id,deadline,{'description':text})
 
 
 #удалять все задачи на определенную дату
@@ -115,7 +111,7 @@ def get_all_tasks(chat_id):
                 res_str+=str(time_left)+"\n"
             except: print("к черту")
         else: res_str+=f"{i}. <s>{task['description']}</s>\n"
-        tasks_ids_arr.append({i:task.get('_id')})
+        tasks_ids_arr.append([i,task['description'],task['deadline'],task['chat_id']])
         i+=1
     print(tasks_ids_arr)
     return res_str
@@ -139,6 +135,6 @@ def get_date_tasks(date,chat_id):
                 res_str+=str(time_left)+"\n"
             except: print("к черту")
         else: res_str+=f"{i}. <s>{task['description']}</s>\n"
-        tasks_ids_arr.append({i:task.get('_id')})
+        tasks_ids_arr.append([i,task['description'],task['deadline'],task['chat_id']])
         i+=1
     return res_str

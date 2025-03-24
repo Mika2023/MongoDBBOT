@@ -62,6 +62,18 @@ def update_data_in_mongodb(task_id, new_data):
     else:
         print(f"Задача с ID {task_id} не найдена.")
         return False
+    
+def update_data_in_mongodb_params(description,date,chat_id, new_data):
+    result = tasks_collection.update_one({'description': description,'deadline':date,'chat_id':chat_id}, {'$set': new_data})
+    if result.modified_count > 0:
+        # Redis
+        redis_key = f"task:{description}:{date}:{chat_id}"
+        redis_client.hset(redis_key, mapping=new_data)  # Используем mapping для словаря
+        print(f"Данные обновлены в Redis для ключа: {redis_key}")
+        return True
+    else:
+        print(f"Задача с ID {chat_id} не найдена.")
+        return False
 
 # delete
 def delete_data_in_mongodb(task_id):
@@ -187,14 +199,20 @@ def read_date_tasks(date,chat_id):
         print(f"Данные для date {date} не найдены.")
         return None
     
-def read_desc_task(description,chat_id):
+def read_desc_task(description,date,chat_id):
     redis_key = f"task:{description}:{chat_id}"
-    cached_data = redis_client.get(redis_key)
-    if cached_data:
-        print("Данные получены из Redis")
-        return cached_data.decode('utf-8')
+
+    tasks=[]
+    for key in redis_client.scan_iter("task:*"):
+        task = redis_client.hgetall(key)
+        task_dict = {}
+        for key_task,value in task.items():
+            task_dict[key_task.decode('utf-8')] = value.decode('utf-8')
+        if task_dict['deadline'].startswith(date) and task_dict['description']==description and task_dict['chat_id']==chat_id:
+            tasks.append(task_dict)
+    if tasks: return tasks
     
-    results = tasks_collection.find_one({'description':description,'chat_id':chat_id})
+    results = tasks_collection.find_one({'description':description,'chat_id':chat_id,'deadline':date})
     if results:
         print("Данные получены из MongoDB")
 

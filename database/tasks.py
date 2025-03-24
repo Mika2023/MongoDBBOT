@@ -22,6 +22,10 @@ def update_task(task_id, new_data):
     return update_data_in_mongodb(task_id, new_data)
 
 @app.task
+def update_task_params(description,chat_id,date, new_data):
+    return update_data_in_mongodb_params(description,date,chat_id,new_data)
+
+@app.task
 def delete_task(task_id):
     return delete_data_in_mongodb(task_id)
 
@@ -107,6 +111,6 @@ def read_tasks_on_date(date,chat_id):
     return read_date_tasks(date,chat_id)
 
 @app.task
-def read_description(description,chat_id):
-    return read_desc_task(description,chat_id)
+def read_description(description,deadline,chat_id):
+    return read_desc_task(description,deadline,chat_id)
 
