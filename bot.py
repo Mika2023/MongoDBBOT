@@ -31,7 +31,7 @@ def add_tasks_to_plan(message):
            return
        description = dif_task[0]
        deadline = dif_task[1]
-       tasks_arr.append({'description':description,'deadline':deadline,'chat_id':message.chat.id})
+       tasks_arr.append({'description':description,'deadline':deadline,'chat_id':message.chat.id,'checked':False})
     add_tasks_list(tasks_arr)
 
 
