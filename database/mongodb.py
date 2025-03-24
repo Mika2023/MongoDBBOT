@@ -130,10 +130,10 @@ def read_data(chat_id):
         return None
 
 def read_task(task_id):
-    redis_key = f"task:{ObjectId(task_id)}"
+    redis_key = f"task:{task_id}"
 
     # Попытка получить данные из Redis
-    cached_data = redis_client.get(redis_key)
+    cached_data = redis_client.hgetall(redis_key)
     if cached_data:
         print("Данные получены из Redis")
         return cached_data.decode('utf-8')  # Данные в Redis хранятся в виде строки
