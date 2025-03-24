@@ -148,7 +148,7 @@ def delete_tasks_on_date(message):
     bot.register_next_step_handler(message,delete_tasks_on_date_date)
 
 def delete_tasks_on_date_date(message):
-    delete_on_date(message.text,message.chat_id)
+    delete_on_date(message.text,message.chat.id)
     bot.send_message(message.chat.id,f"Удалены все задачи на дату {message.text}")
 
 def dd_run_out(chat_id, task):
