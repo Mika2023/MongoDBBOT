@@ -116,6 +116,19 @@ def delete_arr_tasks(tasks_arr):
     else:
         print(f"Задача не найдена.")
         return False
+
+def delete_task_params(description,date,chat_id):
+    result = tasks_collection.delete_many({"&and":[{'deadline':date},{'chat_id':chat_id},{'description':description}]})
+
+    if result.deleted_count > 0:  # Используем deleted_count
+        # Redis
+        redis_key = f"task:{date}:{chat_id}:{description}"
+        redis_client.delete(redis_key)
+        print(f"Данные удалены в Redis для ключа: {redis_key}")
+        return True
+    else:
+        print(f"Задача с дедлайном {date} не найдена.")
+        return False
     
 # @app.task
 def read_data(chat_id):

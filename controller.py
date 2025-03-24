@@ -80,11 +80,11 @@ def delete_on_date(date,chat_id):
     delete_task_date.delay(date,chat_id)
 
 #удалять определенные задачи на дату
-def delete_concrete_task(tasks_nums):
-    tasks_arr = []
-    for item in tasks_ids_arr:
-        if item[0] in tasks_nums: tasks_arr.append(item[1])
-    delete_many_tasks.delay(tasks_arr)
+def delete_concrete_task(task_num):
+    description = tasks_ids_arr[task_num-1][1]
+    chat_id = tasks_ids_arr[task_num-1][2]
+    deadline = tasks_ids_arr[task_num-1][3]
+    delete_task_params.delay(description,deadline,chat_id)
 
 #выводить задачи с оставшимся временем до них
 def get_all_tasks(chat_id):

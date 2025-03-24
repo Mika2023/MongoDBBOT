@@ -34,8 +34,8 @@ def delete_task_date(date,chat_id):
     return delete_tasks_on_date(date,chat_id)
 
 @app.task
-def delete_many_tasks(tasks_arr):
-    return delete_arr_tasks(tasks_arr)
+def delete_many_tasks_params(description,date,chat_id):
+    return delete_task_params(description,date,chat_id)
 
 @app.task
 def read_tasks(chat_id):

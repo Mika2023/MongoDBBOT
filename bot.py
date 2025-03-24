@@ -91,6 +91,8 @@ def save_btn(call):
                                                      callback_data='change_text')
     button_checked = telebot.types.InlineKeyboardButton(text="Отметить выполненным",
                                                      callback_data='change_check')
+    button_checked = telebot.types.InlineKeyboardButton(text="Удалить",
+                                                     callback_data='delete_task_bot')
     keyboard.add(button_text,button_checked)
     bot.send_message(message.chat.id,"Что именно вы хотите изменить?",reply_markup=keyboard)
 
@@ -116,6 +118,21 @@ def change_check(call):
     bot.register_next_step_handler(message,edit_checked)
 
 def edit_checked(message):
+    dif_text = message.text.split()
+    if len(dif_text)!=1:
+        bot.send_message(message.chat.id,"Кажется, вы написали не тот формат(")
+        return
+    
+    set_checked(int(dif_text[0]))
+    bot.send_message(message.chat.id,"Выполнено, кэп!")
+
+@bot.callback_query_handler(func=lambda call: call.data == 'delete_task_bot')
+def delete_task_bot(call):
+    message = call.message
+    bot.send_message(message.chat.id,"Выберите номер задачи")
+    bot.register_next_step_handler(message,delete_task_bot_num)
+
+def delete_task_bot_num(message):
     dif_text = message.text.split()
     if len(dif_text)!=1:
         bot.send_message(message.chat.id,"Кажется, вы написали не тот формат(")
