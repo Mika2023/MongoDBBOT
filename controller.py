@@ -22,17 +22,17 @@ def get_task(description,chat_id):
 
 #добавить задачу в очередь, когда истечет - прислать напоминалку и продлить на день
 def add_task_to_celery(task,task_id):
-    deadline = datetime.strptime(task['deadline'],"%d.%m.%Y %H:%M").astimezone(ZoneInfo("UTC")) #01.01.2025 23:59
+    deadline = datetime.strptime(task['deadline'],"%d.%m.%Y %H:%M").replace(tzinfo=ZoneInfo("Europe/Moscow")).astimezone(ZoneInfo("UTC")) #01.01.2025 23:59
     deadline_come_out.apply_async(args=[task_id],eta=deadline)
 
 #устанавливать напоминания для определенной задачи - добавить напоминалку в очередь
 def set_reminder(chat_id,deadline_str,text):
-    deadline = datetime.strptime(deadline_str,"%d.%m.%Y %H:%M").astimezone(ZoneInfo("UTC"))
+    deadline = datetime.strptime(deadline_str,"%d.%m.%Y %H:%M").replace(tzinfo=ZoneInfo("Europe/Moscow")).astimezone(ZoneInfo("UTC"))
     send_remind.apply_async(args=[text,chat_id],eta=deadline)
 
 #напоминать за некоторое время до дд о задаче
 def remind_tasks(task,task_id):
-    deadline = datetime.strptime(task['deadline'],"%d.%m.%Y %H:%M").astimezone(ZoneInfo("UTC")) #01.01.2025 23:59
+    deadline = datetime.strptime(task['deadline'],"%d.%m.%Y %H:%M").replace(tzinfo=ZoneInfo("Europe/Moscow")).astimezone(ZoneInfo("UTC")) #01.01.2025 23:59
     remind_dd = deadline - timedelta(hours=3)
     remind_about_task.apply_async(args=[task,task_id],eta=remind_dd)
 
