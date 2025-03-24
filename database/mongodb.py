@@ -118,7 +118,7 @@ def delete_arr_tasks(tasks_arr):
         return False
 
 def delete_task_params(description,date,chat_id):
-    result = tasks_collection.delete_one({"&and":[{'deadline':date},{'chat_id':chat_id},{'description':description}]})
+    result = tasks_collection.delete_one({'deadline':date,'chat_id':chat_id,'description':description})
 
     if result.deleted_count > 0:  # Используем deleted_count
         # Redis
