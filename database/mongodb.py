@@ -23,7 +23,7 @@ def add_task_to_mongodb(data):
     result = tasks_collection.insert_one(data)
 
     # Сохранение данных в Redis
-    redis_key = f"task:{result.inserted_id}"
+    redis_key = f"task:{str(result.inserted_id)}"
     redis_client.hset(redis_key, mapping=data)  # Используем mapping для словаря
 
     return str(result.inserted_id)
@@ -130,7 +130,7 @@ def read_data(chat_id):
         return None
 
 def read_task(task_id):
-    redis_key = f"task:{ObjectId(task_id)}"
+    redis_key = f"task:{task_id}"
 
     # Попытка получить данные из Redis
     cached_data = redis_client.hgetall(redis_key)
