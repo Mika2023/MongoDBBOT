@@ -33,7 +33,7 @@ def read_tasks(chat_id):
     return read_data(chat_id)
 
 @app.task
-def read_task(task_id):
+def read_task_task(task_id):
     return read_task(task_id)
 
 @app.task
