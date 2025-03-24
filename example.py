@@ -1,5 +1,5 @@
 import time
-from database.tasks import add_tasks,read_tasks,add_task,update_task
+from database.tasks import add_tasks,read_tasks,add_task,update_task,send_remind,remind_about_task
 
 data = [
     {'description': 'go to the darkness', 'deadline': '27.02.2025', 'chat_id': 123455},
@@ -7,16 +7,17 @@ data = [
     {'description': 'go', 'deadline': '22.03.2025', 'chat_id': 987532}
 ]
 
+remind_about_task()
 
 # data = {'description': 'go to the darkness', 'deadline': '27.02.2025', 'chat_id': 123455}
 
 # res = add_tasks.delay(data)
 # ids = res.get()
 # a = read_tasks.delay(123455)
+# # print(a.get())
+# update_task.delay("67e060cbeb47c198ec86ab88", {'description': 'Updated task'})
+# a = read_tasks.delay(123455)
 # print(a.get())
-update_task.delay("67e060cbeb47c198ec86ab88", {'description': 'Updated task'})
-a = read_tasks.delay(123455)
-print(a.get())
 # print(result.get())
 #task_id = result.get()
 

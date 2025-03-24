@@ -34,8 +34,7 @@ def set_reminder(chat_id,deadline_str,text):
 def remind_tasks(task,task_id):
     deadline = datetime.strptime(task['deadline'],"%d.%m.%Y %H:%M").replace(tzinfo=ZoneInfo("Europe/Moscow")).astimezone(ZoneInfo("UTC")) #01.01.2025 23:59
     remind_dd = deadline - timedelta(hours=3)
-    from bot import remind_task
-    remind_about_task.apply_async(args=[task_id,remind_task],eta=remind_dd)
+    remind_about_task.apply_async(args=[task_id],eta=remind_dd)
 
 #добавить задачу - функция добавления одной задачи, функционал тот же, что и выше
 def add_one_task(task):
