@@ -36,13 +36,13 @@ def read_tasks(chat_id):
 def read_task_task(task_id):
     return read_task(task_id)
 
-@app.task
+@app.task(bind=True)
 def deadline_come_out(task_id):
 
     task_str = read_task(task_id)
     if task_str=="": return #если ничего нет
     task = json.loads(task_str)
-    if task['checked']: return #если задача выполнена
+    if task['checked']=='True': return #если задача выполнена
 
     deadline = datetime.strptime(task['deadline'],"%d.%m.%Y %H:%M")
     new_deadline = deadline + timedelta(days=1)
@@ -51,12 +51,12 @@ def deadline_come_out(task_id):
     chat_id = task['chat_id']
     dd_run_out(chat_id,task)
 
-@app.task
+@app.task(bind=True)
 def send_remind(text,chat_id):
     from bot import send_reminder
     send_reminder(text,chat_id)
 
-@app.task
+@app.task(bind=True)
 def remind_about_task(task,task_id):
     task_str = read_task(task_id)
     if task_str=="": return #если ничего нет

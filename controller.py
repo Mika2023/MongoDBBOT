@@ -61,7 +61,7 @@ def set_checked(task_num):
             task_id = item[1]
             break
     if task_id=='': return
-    update_task.delay(task_id,{'checked':True})
+    update_task.delay(task_id,{'checked':'True'})
 
 #изменить текст задачи - обновить ее в бд
 def edit_text(task_num,text):
