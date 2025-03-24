@@ -62,13 +62,10 @@ def add_tasks_list(tasks_arr):
 
 #поставить задачу выполненной - обновить ее в бд и снять с очереди
 def set_checked(task_num):
-    task_id = ''
-    for item in tasks_ids_arr:
-        if item[0]==task_num:
-            task_id = item[1]
-            break
-    if task_id=='': return
-    update_task.delay(task_id,{'checked':'True'})
+    description = tasks_ids_arr[task_num-1][1]
+    chat_id = tasks_ids_arr[task_num-1][2]
+    deadline = tasks_ids_arr[task_num-1][3]
+    update_task.delay(description,chat_id,deadline,{'checked':'True'})
 
 #изменить текст задачи - обновить ее в бд
 def edit_text(task_num,text):

@@ -109,6 +109,21 @@ def edit_text_task(message):
     edit_text(int(dif_text[0]),dif_text[1])
     bot.send_message(message.chat.id,"Задача успешно отредактирована!")
 
+@bot.callback_query_handler(func=lambda call: call.data == 'change_check')
+def change_check(call):
+    message = call.message
+    bot.send_message(message.chat.id,"Выберите номер задачи")
+    bot.register_next_step_handler(message,edit_checked)
+
+def edit_checked(message):
+    dif_text = message.text
+    if len(dif_text)!=1:
+        bot.send_message(message.chat.id,"Кажется, вы написали не тот формат(")
+        return
+    
+    set_checked(int(dif_text[0]),dif_text[1])
+    bot.send_message(message.chat.id,"Выполнено, кэп!")
+
 
 def dd_run_out(chat_id, task):
     task_desc = task['description']
