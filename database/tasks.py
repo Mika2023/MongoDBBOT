@@ -52,10 +52,12 @@ def decode_redis_data(redis_dict):
 def decode_redis_arr_dict(redis_dict):
     """Преобразует список словарей с bytes-ключами и значениями в обычный arr."""
     """Ручной парсинг для особо сложных случаев"""
+    
     json_str = redis_dict.replace("'", '"')
-        
+    json_str = json_str.replace('ObjectId(', '"').replace(')', '"')
         # Экранируем оставшиеся кавычки внутри строк
-    json_str = json_str.replace('": "', '": \\"').replace('", "', '\\", "')
+    # json_str = json_str.replace('": "', '": \\"').replace('", "', '\\", "')
+    print(json_str)
     try:    
         return json.loads(json_str)
     except json.JSONDecodeError:

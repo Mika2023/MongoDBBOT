@@ -110,14 +110,19 @@ def read_data(chat_id):
     # Сначала смотрим Redis
     redis_key = f"chat_id:{chat_id}"
 
-    # Попытка получить данные из Redis
-    cached_data = redis_client.get(redis_key)
-    if cached_data:
-        print("Данные получены из Redis")
-        return cached_data.decode('utf-8')  # Данные в Redis хранятся в виде строки
+    tasks = []
+    
+    for key in redis_client.scan_iter("task:*"):
+        task = redis_client.hgetall(key)
+        task_dict = {}
+        for key_task,value in task.items():
+            task_dict[key_task.decode('utf-8')] = value.decode('utf-8')
+        if task_dict['chat_id']==chat_id:
+            tasks.append(task_dict)
+    if tasks: return tasks  # Данные в Redis хранятся в виде строки
 
     # Если данных нет в Redis, загружаем из MongoDB
-    results = list(tasks_collection.find({'chat_id': chat_id}))
+    results = list(tasks_collection.find({'chat_id': chat_id},{'_id': 0}))
     if results:
         print("Данные получены из MongoDB")
 
@@ -133,11 +138,16 @@ def read_data(chat_id):
 def read_task(task_id):
     redis_key = f"task:{task_id}"
 
-    # Попытка получить данные из Redis
-    cached_data = redis_client.hgetall(redis_key)
-    if cached_data:
-        print("Данные получены из Redis")
-        return cached_data  
+    tasks = []
+    
+    for key in redis_client.scan_iter("task:*"):
+        task = redis_client.hgetall(key)
+        task_dict = {}
+        for key_task,value in task.items():
+            task_dict[key_task.decode('utf-8')] = value.decode('utf-8')
+        if task_dict['_id']==task_id:
+            tasks.append(task_dict)
+    if tasks: return tasks 
 
     # Если данных нет в Redis, загружаем из MongoDB
     results = list(tasks_collection.find({'task': task_id}))

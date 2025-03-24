@@ -8,6 +8,7 @@ import json
 #сделать получалки task_id 
 
 tasks_ids_arr = []#для id задач
+saved_tasks = [] #когда пользователь просит вывести задачи, они сохраняются
 def get_task_id(description,chat_id):
     result_str = read_description.delay(description,chat_id)
     result = json.loads(result_str.get())
@@ -79,6 +80,7 @@ def edit_text(task_num,text):
     if task_id=='': return
     update_task.delay(task_id,{'description':text})
 
+
 #удалять все задачи на определенную дату
 def delete_on_date(date,chat_id):
     delete_task_date.delay(date,chat_id)
@@ -93,10 +95,9 @@ def delete_concrete_task(tasks_nums):
 #выводить задачи с оставшимся временем до них
 def get_all_tasks(chat_id):
     result = read_tasks.delay(chat_id)
-    tasks_str = result.get()
-    # print(type(tasks_str))
-    if tasks_str==None:return ""
-    tasks = decode_redis_arr_dict(tasks_str)
+    tasks = result.get()
+    if tasks==None:return ""
+    # tasks = decode_redis_arr_dict(tasks_str)
     # tasks_str = tasks_str.replace("'", '"')
     # print(type(tasks_str),tasks_str)
     # tasks = json.loads(tasks_str)
@@ -104,7 +105,6 @@ def get_all_tasks(chat_id):
     tasks_ids_arr.clear()
     res_str = ""
     i = 1
-    print(tasks)
     for task in tasks:
         if task['checked']=='False': 
             res_str+=f"{i}. {task['description']}\n\t\tВремени осталось - "

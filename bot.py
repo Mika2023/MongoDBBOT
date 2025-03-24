@@ -59,7 +59,11 @@ def print_all_tasks(message):
         bot.send_message(message.chat.id,"<i>О-Оуууууу...</i>\nУ вас нет никаких задач. Плохо это или хорошо?",parse_mode="HTML")
         return
     res = "Вы просили, мы сделали)\nВот список всех ваших задач:\n"+res
-    bot.send_message(message.chat.id,res,parse_mode="HTML")
+    keyboard = telebot.types.InlineKeyboardMarkup()
+    button_change = telebot.types.InlineKeyboardButton(text="Изменить",
+                                                     callback_data='change_data')
+    keyboard.add(button_change)
+    bot.send_message(message.chat.id,res,parse_mode="HTML",reply_markup=keyboard)
 
 @bot.message_handler(commands=["get_tasks_on_date"])
 def get_tasks_on_date_bot(message):
@@ -70,9 +74,40 @@ def get_tasks_on_date_date(message):
     # try:
         res = get_date_tasks(message.text,message.chat.id)
         res = f"Ваш список мечты на дату: {message.text}\n"+res
-        bot.send_message(message.chat.id,res,parse_mode="HTML")
+        keyboard = telebot.types.InlineKeyboardMarkup()
+        button_change = telebot.types.InlineKeyboardButton(text="Изменить",
+                                                     callback_data='change_data')
+        keyboard.add(button_change)
+        bot.send_message(message.chat.id,res,parse_mode="HTML",reply_markup=keyboard)
+
     # except Exception as e:
     #     bot.send_message(message.chat.id,"Вы неправильно ввели дату(\nОбязательно попробуйте снова!")
+
+@bot.callback_query_handler(func=lambda call: call.data == 'change_data')
+def save_btn(call):
+    message = call.message
+    keyboard = telebot.types.InlineKeyboardMarkup()
+    button_text = telebot.types.InlineKeyboardButton(text="Изменить текст",
+                                                     callback_data='change_text')
+    button_checked = telebot.types.InlineKeyboardButton(text="Отметить выполненным",
+                                                     callback_data='change_check')
+    keyboard.add(button_text,button_checked)
+    bot.send_message(message.chat.id,"Что именно вы хотите изменить?",reply_markup=keyboard)
+
+@bot.callback_query_handler(func=lambda call: call.data == 'change_text')
+def change_text(call):
+    message = call.message
+    bot.send_message(message.chat.id,"Выберите номер задачи из списка выше и напишите исправленный текст\n<i>Формат</i>Номер задачи\nТекст",parse_mode="HTML")
+    bot.register_next_step_handler(message,edit_text_task)
+
+def edit_text_task(message):
+    dif_text = message.text.split(sep='\n',maxsplit=1)
+    if len(dif_text)!=2:
+        bot.send_message(message.chat.id,"Кажется, вы написали не тот формат(")
+        return
+    
+    edit_text(dif_text[0],dif_text[1])
+    bot.send_message(message.chat.id,"Задача успешно отредактирована!")
 
 
 def dd_run_out(chat_id, task):
