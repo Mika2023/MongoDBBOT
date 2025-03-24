@@ -38,7 +38,7 @@ def add_tasks_to_plan(message):
 
 @bot.message_handler(commands=["set_reminder"])
 def set_reminder_bot(message):
-    bot.send_message("Очень мудрое решение! С напоминаниями задачи всегда быстрее выполняются! Скорее, напишите текст напоминания и дату, когда напомнить, формате\nописание - дд.мм.гггг ч:м")
+    bot.send_message(message.chat.id,"Очень мудрое решение! С напоминаниями задачи всегда быстрее выполняются! Скорее, напишите текст напоминания и дату, когда напомнить, формате\nописание - дд.мм.гггг ч:м")
     bot.register_next_step_handler(message,set_reminder_text)
 
 def set_reminder_text(message):
