@@ -130,7 +130,7 @@ def read_data(chat_id):
         return None
 
 def read_task(task_id):
-    redis_key = f"task:{task_id}"
+    redis_key = f"task:{ObjectId(task_id)}"
 
     # Попытка получить данные из Redis
     cached_data = redis_client.hgetall(redis_key)
