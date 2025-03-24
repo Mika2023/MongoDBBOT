@@ -84,7 +84,7 @@ def delete_concrete_task(task_num):
     description = tasks_ids_arr[task_num-1][1]
     chat_id = tasks_ids_arr[task_num-1][2]
     deadline = tasks_ids_arr[task_num-1][3]
-    delete_task_params.delay(description,deadline,chat_id)
+    delete_many_tasks_params.delay(description,deadline,chat_id)
 
 #выводить задачи с оставшимся временем до них
 def get_all_tasks(chat_id):
