@@ -56,7 +56,7 @@ def deadline_come_out(task_id):
     deadline = datetime.strptime(task['deadline'],"%d.%m.%Y %H:%M")
     new_deadline = deadline + timedelta(days=1)
     update_data_in_mongodb(task_id,{"deadline":new_deadline.strftime("%d.%m.%Y %H:%M")})
-    from ..bot import dd_run_out
+    from bot import dd_run_out
     chat_id = task['chat_id']
     dd_run_out(chat_id,task)
 
@@ -75,9 +75,9 @@ def remind_about_task(task,task_id):
     task = decode_redis_data(task_str)
     if task['checked']=='True': return #если задача выполнена
 
-    from ..bot import remind_task
+    import bot
     chat_id = task['chat_id']
-    remind_task(task,chat_id)
+    bot.remind_task(task,chat_id)
 
 @app.task
 def read_tasks_on_date(date,chat_id):
