@@ -19,7 +19,7 @@ def help(message):
 @bot.message_handler(commands=["set_tasks"])
 def set_tasks(message):
     bot.send_message(message.chat.id,"Отлично! Давайте составим список задач, чтобы достичь своей мечты! Напишите задачи в следующем формате:\n\nописание задачи - дедлайн\nописание задачи - дедлайн <i>дд.мм.гггг ч:м</i>",parse_mode="HTML")
-    bot.register_next_step_handler(add_tasks_to_plan)
+    bot.register_next_step_handler(message,add_tasks_to_plan)
 
 def add_tasks_to_plan(message):
     tasks_str = message.text.split(sep='\n')
