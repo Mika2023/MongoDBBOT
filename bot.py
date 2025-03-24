@@ -32,7 +32,9 @@ def add_tasks_to_plan(message):
        description = dif_task[0]
        deadline = dif_task[1]
        tasks_arr.append({'description':description,'deadline':deadline,'chat_id':message.chat.id,'checked':False})
-    add_tasks_list(tasks_arr)
+    res = add_tasks_list(tasks_arr)
+    if res: bot.send_message(message.chat.id,"Оооооо, очень крутые задачи, а еще...\n\nОни успешно добавлены!")
+    else:bot.send_message(message.chat.id,"Какая-то хрень произошла с сервером, попробуйте снова пжпжпж")
 
 
 

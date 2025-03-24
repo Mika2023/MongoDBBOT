@@ -46,9 +46,12 @@ def add_one_task(task):
 def add_tasks_list(tasks_arr):
     result = add_tasks.delay(tasks_arr)
     tasks_ids = result.get()
+    if tasks_ids==None: return False 
     for i in range(len(tasks_arr)):
         add_task_to_celery(tasks_arr[i],tasks_ids[i])
         remind_about_task(tasks_arr[i],tasks_ids[i])
+    return True
+
 
 #поставить задачу выполненной - обновить ее в бд и снять с очереди
 def set_checked(task_num):
