@@ -107,13 +107,13 @@ def get_all_tasks(chat_id):
     print(tasks)
     for task in tasks:
         if task['checked']=='False': 
-            res_str+=f"{i}. {task['description']}\n\tВремени осталось - "
+            res_str+=f"{i}. {task['description']}\n\t\tВремени осталось - "
             try:
                 deadline = datetime.strptime(task['deadline'],"%d.%m.%Y %H:%M")
                 time_left = deadline - datetime.now()
                 res_str+=str(time_left)+"\n"
             except: print("к черту")
-        else: res_str+=f"{i}. <s>{task['description']}</s>"
+        else: res_str+=f"{i}. <s>{task['description']}</s>\n"
         tasks_ids_arr.append({i:task.get('_id')})
         i+=1
     return res_str
@@ -122,17 +122,21 @@ def get_all_tasks(chat_id):
 def get_date_tasks(date,chat_id):
     result = read_date_tasks.delay(date,chat_id)
     tasks_str = result.get()
-    if tasks_str=="":return
-    tasks = json.loads(tasks_str)
+    if tasks_str==None:return ""
+    tasks = decode_redis_arr_dict(tasks_str)
 
     res_str = ""
     i = 1
     tasks_ids_arr.clear()
     for task in tasks:
-        res_str+=f"{i}. {task['description']}\n\tВремени осталось - "
-        deadline = datetime.strptime(task['deadline'],"%d.%m.%Y %H:%M")
-        time_left = deadline - datetime.now()
-        res_str+=str(time_left)+"\n"
-        tasks_ids_arr.append([i,task['task'] if task['task'] else task['_id']])
+        if task['checked']=='False': 
+            res_str+=f"{i}. {task['description']}\n\t\tВремени осталось - "
+            try:
+                deadline = datetime.strptime(task['deadline'],"%d.%m.%Y %H:%M")
+                time_left = deadline - datetime.now()
+                res_str+=str(time_left)+"\n"
+            except: print("к черту")
+        else: res_str+=f"{i}. <s>{task['description']}</s>\n"
+        tasks_ids_arr.append({i:task.get('_id')})
         i+=1
     return res_str
