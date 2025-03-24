@@ -22,7 +22,7 @@ def update_task(task_id, new_data):
     return update_data_in_mongodb(task_id, new_data)
 
 @app.task
-def update_task_params(description,chat_id,date, new_data):
+def update_task_params(description,date, chat_id,new_data):
     return update_data_in_mongodb_params(description,date,chat_id,new_data)
 
 @app.task
