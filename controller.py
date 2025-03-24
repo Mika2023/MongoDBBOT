@@ -120,7 +120,7 @@ def get_all_tasks(chat_id):
 
 #выводить задачи на определенную дату
 def get_date_tasks(date,chat_id):
-    result = read_date_tasks.delay(date,chat_id)
+    result = read_tasks_on_date.delay(date,chat_id)
     tasks_str = result.get()
     if tasks_str==None:return ""
     tasks = decode_redis_arr_dict(tasks_str)
