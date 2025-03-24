@@ -27,8 +27,12 @@ def add_task_to_celery(task,task_id):
 
 #устанавливать напоминания для определенной задачи - добавить напоминалку в очередь
 def set_reminder(chat_id,deadline_str,text):
-    deadline = datetime.strptime(deadline_str,"%d.%m.%Y %H:%M").replace(tzinfo=ZoneInfo("Europe/Moscow")).astimezone(ZoneInfo("UTC"))
-    send_remind.apply_async(args=[text,chat_id],eta=deadline)
+    try:
+        deadline = datetime.strptime(deadline_str,"%d.%m.%Y %H:%M").replace(tzinfo=ZoneInfo("Europe/Moscow")).astimezone(ZoneInfo("UTC"))
+        send_remind.apply_async(args=[text,chat_id],eta=deadline)
+        return True
+    except Exception as e:
+        return False
 
 #напоминать за некоторое время до дд о задаче
 def remind_tasks(task,task_id):

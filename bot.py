@@ -37,9 +37,20 @@ def add_tasks_to_plan(message):
     else:bot.send_message(message.chat.id,"Какая-то хрень произошла с сервером, попробуйте снова пжпжпж")
 
 @bot.message_handler(commands=["set_reminder"])
-def set_reminder(message):
-    bot.send_message()
+def set_reminder_bot(message):
+    bot.send_message("Очень мудрое решение! С напоминаниями задачи всегда быстрее выполняются! Скорее, напишите текст напоминания и дату, когда напомнить, формате\nописание - дд.мм.гггг ч:м")
+    bot.register_next_step_handler(message,set_reminder_text)
 
+def set_reminder_text(message):
+    dif_rem = message.text.split(sep=' - ')
+    if len(dif_rem)!=2:
+           bot.send_message(message.chat.id,"Кажется, вы неправильно набрали напоминание... Попробуйте снова, нажмите на /set_reminder!")
+           return
+    description = dif_rem[0]
+    deadline = dif_rem[1]
+    res = set_reminder(message.chat.id,deadline,description)
+    if res: bot.send_message(message.chat.id,"Аааага, запомнилось!\n<i>Вы получать +15 социальных кредитов и кошка жену за это</i>",parse_mode="HTML")
+    else: bot.send_message(message.chat.id,"Плакать охота, что-то пошло не так, повторите позже)")
 
 def dd_run_out(chat_id, task):
     task_desc = task['description']
