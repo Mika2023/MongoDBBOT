@@ -42,18 +42,18 @@ def deadline_come_out(task_id):
     task_str = read_task(task_id)
     if task_str==None: return #если ничего нет
     # task = json.loads(task_str)
-    if task['checked']=='True': return #если задача выполнена
+    if task_str['checked']=='True': return #если задача выполнена
 
-    deadline = datetime.strptime(task['deadline'],"%d.%m.%Y %H:%M")
+    deadline = datetime.strptime(task_str['deadline'],"%d.%m.%Y %H:%M")
     new_deadline = deadline + timedelta(days=1)
     update_data_in_mongodb(task_id,{"deadline":new_deadline.strftime("%d.%m.%Y %H:%M")})
-    from bot import dd_run_out
-    chat_id = task['chat_id']
-    dd_run_out(chat_id,task)
+    from ..bot import dd_run_out
+    chat_id = task_str['chat_id']
+    dd_run_out(chat_id,task_str)
 
 @app.task
 def send_remind(text,chat_id):
-    from bot import send_reminder
+    from ..bot import send_reminder
     send_reminder(text,chat_id)
 
 @app.task
@@ -61,11 +61,11 @@ def remind_about_task(task,task_id):
     task_str = read_task(task_id)
     if task_str==None: return #если ничего нет
     # task = json.loads(task_str)
-    if task['checked']=='True': return #если задача выполнена
+    if task_str['checked']=='True': return #если задача выполнена
 
-    from bot import remind_task
-    chat_id = task['chat_id']
-    remind_task(task,chat_id)
+    from ..bot import remind_task
+    chat_id = task_str['chat_id']
+    remind_task(task_str,chat_id)
 
 @app.task
 def read_tasks_on_date(date,chat_id):
