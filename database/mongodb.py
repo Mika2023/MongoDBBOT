@@ -68,9 +68,15 @@ def update_data_in_mongodb_params(description,date,chat_id, new_data):
     result = tasks_collection.update_one({'description': description,'deadline':date,'chat_id':chat_id}, {'$set': new_data})
     if result.modified_count > 0:
         # Redis
-        redis_key = f"task:{description}:{date}:{chat_id}"
-        redis_client.hset(redis_key, mapping=new_data)  # Используем mapping для словаря
-        print(f"Данные обновлены в Redis для ключа: {redis_key}")
+        for key in redis_client.scan_iter("task:*"):
+            task = redis_client.hgetall(key)
+            task_dict = {}
+            for key_task,value in task.items():
+                task_dict[key_task.decode('utf-8')] = value.decode('utf-8')
+            if 'deadline' in task_dict.keys() and 'chat_id' in task_dict.keys() and 'description' in task_dict.keys():
+                if task_dict['chat_id']==chat_id and task_dict['deadline']==date and task_dict['description']==description:
+                    redis_client.hset(key,mapping=new_data)
+        print(f"Данные обновлены в Redis для ключа: {description}")
         return True
     else:
         print(f"Задача с ID {chat_id} не найдена.")
@@ -91,17 +97,32 @@ def delete_data_in_mongodb(task_id):
         return False
 
 #delete all tasks on date    
-def delete_tasks_on_date(date,chat_id):
-    result = tasks_collection.delete_one({'deadline':date,'chat_id':chat_id})
+def delete_tasks_on_date(deadline,chat_id):
+    # target_date = datetime.strftime(deadline,"%d.%m.%Y")
+    # start_date = datetime(target_date.year, target_date.month, target_date.day)
+    # end_date = start_date + timedelta(days=1)
+    
+    # Удаляем и получаем количество
+    result = tasks_collection.delete_many({
+        "deadline": 
+            {"$regex": f"^{deadline}"},
+        "chat_id":chat_id
+    })
 
     if result.deleted_count > 0:  # Используем deleted_count
         # Redis
-        redis_key = f"task:{date}:{chat_id}"
-        redis_client.delete(redis_key)
-        print(f"Данные удалены в Redis для ключа: {redis_key}")
+        for key in redis_client.scan_iter("task:*"):
+            task = redis_client.hgetall(key)
+            task_dict = {}
+            for key_task,value in task.items():
+                task_dict[key_task.decode('utf-8')] = value.decode('utf-8')
+            # print(task_dict,task_dict.keys())  
+            if 'deadline' in task_dict.keys() and 'chat_id' in task_dict.keys() and task_dict['deadline'].startswith(deadline) and task_dict['chat_id']==chat_id:
+                redis_client.delete(key)
+                print(f"Данные удалены в Redis для ключа: {key}")
         return True
     else:
-        print(f"Задача с дедлайном {date} не найдена.")
+        print(f"Задача с дедлайном {deadline} не найдена.")
         return False
 
 #delete an array of tasks
@@ -120,28 +141,14 @@ def delete_arr_tasks(tasks_arr):
 
 def delete_task_params(description,date,chat_id):
     # result = tasks_collection.delete_one({'deadline':date,'chat_id':chat_id,'description':description})
-    target_date = datetime.strftime(date,"%d.%m.%Y %H:%M")
-    start_date = datetime(target_date.year, target_date.month, target_date.day)
-    end_date = start_date + timedelta(days=1)
     
-    # Удаляем и получаем количество
-    result = tasks_collection.delete_many({
-        "deadline": {
-            {"$regex": f"^{date}"}
-        },
-        "chat_id":chat_id,
-        "description":description
-    })
+    result = tasks_collection.delete_one({'deadline':date,'chat_id':chat_id,'description':description})
+
     if result.deleted_count > 0:  # Используем deleted_count
         # Redis
-        for key in redis_client.scan_iter("task:*"):
-            task = redis_client.hgetall(key)
-            task_dict = {}
-            for key_task,value in task.items():
-                task_dict[key_task.decode('utf-8')] = value.decode('utf-8')
-            if task_dict['deadline'].startswith(date) and task_dict['description']==description and task_dict['chat_id']==chat_id:
-                redis_client.delete(key)
-        print(f"Данные удалены в Redis для ключа: {date}")
+        redis_key = f"task:{date}:{chat_id}:{description}"
+        redis_client.delete(redis_key)
+        print(f"Данные удалены в Redis для ключа: {redis_key}")
         return True
     else:
         print(f"Задача с дедлайном {date} не найдена.")
