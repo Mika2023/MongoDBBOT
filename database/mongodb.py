@@ -167,6 +167,12 @@ def read_data(chat_id):
             task = redis_client.hgetall(key)
         else: task = redis_client.get(key)
         task = task.decode('utf-8')
+        json_str = task.replace("'", '"')
+        try:    
+            task = json.loads(json_str)
+        except json.JSONDecodeError:
+            # Вариант 2: Используем literal_eval как запасной вариант
+            task = literal_eval(task)
         print(task)
         task_dict = {}
         for key_task,value in task.items():
