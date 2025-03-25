@@ -73,7 +73,7 @@ def update_data_in_mongodb_params(description,date,chat_id, new_data):
             task_dict = {}
             for key_task,value in task.items():
                 task_dict[key_task.decode('utf-8')] = value.decode('utf-8')
-            if 'deadline' in task_dict.keys() and 'chat_id' in task_dict.keys() and 'description' in task_dict.keys():
+            if ['deadline','chat_id', 'description'] in task_dict.keys():# and 'chat_id' in task_dict.keys() and 'description' in task_dict.keys()
                 if task_dict['chat_id']==chat_id and task_dict['deadline']==date and task_dict['description']==description:
                     redis_client.hset(key,mapping=new_data)
         print(f"Данные обновлены в Redis для ключа: {description}")
@@ -117,7 +117,7 @@ def delete_tasks_on_date(deadline,chat_id):
             for key_task,value in task.items():
                 task_dict[key_task.decode('utf-8')] = value.decode('utf-8')
             # print(task_dict,task_dict.keys())  
-            if 'deadline' in task_dict.keys() and 'chat_id' in task_dict.keys() and task_dict['deadline'].startswith(deadline) and task_dict['chat_id']==chat_id:
+            if ['deadline','chat_id'] in task_dict.keys() and task_dict['deadline'].startswith(deadline) and task_dict['chat_id']==chat_id:
                 redis_client.delete(key)
                 print(f"Данные удалены в Redis для ключа: {key}")
         return True
@@ -194,7 +194,7 @@ def read_task(task_id):
         task_dict = {}
         for key_task,value in task.items():
             task_dict[key_task.decode('utf-8')] = value.decode('utf-8')
-        if task_dict['_id']==task_id:
+        if '_id' in task_dict.keys() and task_dict['_id']==task_id:
             tasks.append(task_dict)
     if tasks: return tasks 
 
