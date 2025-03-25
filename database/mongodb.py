@@ -1,5 +1,6 @@
 
 # from database.celery_bot import app
+from ast import literal_eval
 from datetime import datetime, timedelta
 import json
 from pymongo import MongoClient
@@ -216,8 +217,15 @@ def read_date_tasks(date,chat_id):
     tasks = []
     
     for key in redis_client.scan_iter("task:*"):
-        task = list(redis_client.get(key).decode('utf-8'))
-        print(task)
+        task = redis_client.get(key).decode('utf-8')
+        task = task.replace("'", '"')
+        res = []
+        try:    
+            res = json.loads(task)
+        except json.JSONDecodeError:
+            # Вариант 2: Используем literal_eval как запасной вариант
+            res = literal_eval(task)
+        print(res)
         task_dict = {}
         # for key_task,value in task.items():
         #     task_dict[key_task.decode('utf-8')] = value.decode('utf-8')
