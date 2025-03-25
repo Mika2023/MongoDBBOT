@@ -158,7 +158,6 @@ def delete_task_params(description,date,chat_id):
 # @app.task
 def read_data(chat_id):
     # Сначала смотрим Redis
-    redis_key = f"chat_id:{chat_id}"
 
     tasks = []
     
@@ -185,12 +184,12 @@ def read_data(chat_id):
                 if 'chat_id' in task_dict and task_dict['chat_id'] == chat_id:
                     tasks.append(task_dict)
             break
-
-        # task_dict = {}
-        # for key_task,value in task.items():
-        #     task_dict[key_task.decode('utf-8')] = value.decode('utf-8')
-        # if 'chat_id' in task_dict and task_dict['chat_id'] == chat_id:
-        #     tasks.append(task_dict)
+        elif type(task)==dict:
+            task_dict = {}
+            for key_task,value in task.items():
+                task_dict[key_task.decode('utf-8')] = value.decode('utf-8')
+            if 'chat_id' in task_dict and task_dict['chat_id'] == chat_id:
+                tasks.append(task_dict)
     if tasks: return tasks  # Данные в Redis хранятся в виде строки
 
     # Если данных нет в Redis, загружаем из MongoDB
@@ -208,7 +207,6 @@ def read_data(chat_id):
         return None
 
 def read_task(task_id):
-    redis_key = f"task:{task_id}"
 
     tasks = []
     
@@ -237,8 +235,40 @@ def read_task(task_id):
         return None
 
 def read_date_tasks(date,chat_id):
-    redis_key = f"task:{date}:{chat_id}"
     tasks = []
+
+    tasks = []
+    
+    for key in redis_client.scan_iter("task:*"):
+        if redis_client.type(key)==b'hash':
+            task = redis_client.hgetall(key)
+        else: task = redis_client.get(key)
+        task = task.decode('utf-8')
+        json_str = task.replace("'", '"')
+        try:    
+            task = json.loads(json_str)
+        except json.JSONDecodeError:
+            # Вариант 2: Используем literal_eval как запасной вариант
+            task = literal_eval(task)
+        if type(task)==list and task[0][0]!='{':
+            for ids in task:
+                redis_key = f'task:{ids}'
+                if redis_client.type(redis_key)==b'hash':
+                    task = redis_client.hgetall(redis_key)
+                else: task = redis_client.get(redis_key)
+                task_dict = {}
+                for key_task,value in task.items():
+                    task_dict[key_task.decode('utf-8')] = value.decode('utf-8')
+                if 'deadline' in task_dict.keys() and 'chat_id' in task_dict.keys() and task_dict['deadline'].startswith(date) and task_dict['chat_id']==chat_id:
+                    tasks.append(task_dict)
+            break
+        elif type(task)==dict:
+            task_dict = {}
+            for key_task,value in task.items():
+                task_dict[key_task.decode('utf-8')] = value.decode('utf-8')
+            if 'deadline' in task_dict.keys() and 'chat_id' in task_dict.keys() and task_dict['deadline'].startswith(date) and task_dict['chat_id']==chat_id:
+                tasks.append(task_dict)
+    if tasks: return tasks  # Данные в Redis хранятся в виде строки
     
     # for key in redis_client.scan_iter("task:*"):
     #     task = redis_client.get(key).decode('utf-8')
