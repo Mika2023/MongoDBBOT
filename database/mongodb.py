@@ -229,14 +229,14 @@ def read_task(task_id):
                 task_dict = {}
                 for key_task,value in task.items():
                     task_dict[key_task.decode('utf-8')] = value.decode('utf-8')
-                if 'deadline' in task_dict.keys() and 'chat_id' in task_dict.keys() and task_dict['deadline'].startswith(date) and task_dict['chat_id']==chat_id:
+                if '_id' in task and task['_id']==task_id:
                     tasks.append(task_dict)
             break
         elif type(task)==dict:
             task_dict = {}
             for key_task,value in task.items():
                 task_dict[key_task.decode('utf-8')] = value.decode('utf-8')
-            if 'deadline' in task_dict.keys() and 'chat_id' in task_dict.keys() and task_dict['deadline'].startswith(date) and task_dict['chat_id']==chat_id:
+            if '_id' in task and task['_id']==task_id:
                 tasks.append(task_dict)
     if tasks: return tasks
 
