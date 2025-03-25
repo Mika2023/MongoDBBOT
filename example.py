@@ -7,6 +7,7 @@ data = [
     {'description': 'go to the sky', 'deadline': '01.02.2025', 'chat_id': 123455},
     {'description': 'go', 'deadline': '22.03.2025', 'chat_id': 987532}
 ]
+set_reminder(1494200750,"fefw",'25.03.2025 22:19')
 # delete_on_date('25.03.2025',1494200750)
 # data = {'description': 'go to the darkness', 'deadline': '27.02.2025', 'chat_id': 123455}
 
