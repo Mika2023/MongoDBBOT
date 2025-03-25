@@ -14,11 +14,13 @@ def start(message):
 
 @bot.message_handler(commands=["help"])
 def help(message):
-    bot.send_message(message.chat.id,"")
+    bot.send_message(message.chat.id,"<i>Так, куда жмать, если вы хотите...</i>\n/set_tasks - запланировать задачи\n/set_reminder - поставить напоминание\n"
+    "/get_all_tasks - посмотреть все ваши планы\n/get_tasks_on_date - посмотреть задачи на определенную дату\n"
+    "/delete_tasks_on_date - удалить все задачи на определенную дату\nДерзайте, ждем ваших команд!)",parse_mode='HTML')
 
 @bot.message_handler(commands=["set_tasks"])
 def set_tasks(message):
-    bot.send_message(message.chat.id,"Отлично! Давайте составим список задач, чтобы достичь своей мечты! Напишите задачи в следующем формате:\n\nописание задачи - дедлайн\nописание задачи - дедлайн <i>дд.мм.гггг ч:м</i>",parse_mode="HTML")
+    bot.send_message(message.chat.id,"Отлично! Давайте составим список задач, чтобы достичь своей мечты! Напишите задачи в следующем формате:\n\n<b>описание задачи - дедлайн</b><i>дд.мм.гггг ч:м</i>\nописание задачи - дедлайн <i>дд.мм.гггг ч:м</i>...",parse_mode="HTML")
     bot.register_next_step_handler(message,add_tasks_to_plan)
 
 def add_tasks_to_plan(message):
@@ -33,12 +35,12 @@ def add_tasks_to_plan(message):
        deadline = dif_task[1]
        tasks_arr.append({'description':description,'deadline':deadline,'chat_id':message.chat.id,'checked':'False'})
     res = add_tasks_list(tasks_arr)
-    if res: bot.send_message(message.chat.id,"Оооооо, очень крутые задачи, а еще...\n\nОни успешно добавлены!")
+    if res: bot.send_message(message.chat.id,"Оооооо, очень крутые задачи, а еще...\n\n<b>Они успешно добавлены!</b>",parse_mode='HTML')
     else:bot.send_message(message.chat.id,"Какая-то хрень произошла с сервером, попробуйте снова пжпжпж")
 
 @bot.message_handler(commands=["set_reminder"])
 def set_reminder_bot(message):
-    bot.send_message(message.chat.id,"Очень мудрое решение! С напоминаниями задачи всегда быстрее выполняются! Скорее, напишите текст напоминания и дату, когда напомнить, формате\nописание - дд.мм.гггг ч:м")
+    bot.send_message(message.chat.id,"Очень мудрое решение! С напоминаниями задачи всегда быстрее выполняются! Скорее, напишите текст напоминания и дату, когда напомнить, в формате\n<b><i>описание - дд.мм.гггг ч:м</i></b>",parse_mode='HTML')
     bot.register_next_step_handler(message,set_reminder_text)
 
 def set_reminder_text(message):
@@ -67,7 +69,7 @@ def print_all_tasks(message):
 
 @bot.message_handler(commands=["get_tasks_on_date"])
 def get_tasks_on_date_bot(message):
-    bot.send_message(message.chat.id,"Ждем от вас дату, напомню формат:\n<i>дд.мм.гггг</i>\nВсе просто)",parse_mode="HTML")
+    bot.send_message(message.chat.id,"Ждем от вас дату, напоминаем формат:\n<b><i>дд.мм.гггг</i></b>\nВсе просто)",parse_mode="HTML")
     bot.register_next_step_handler(message,get_tasks_on_date_date)
 
 def get_tasks_on_date_date(message):
@@ -86,7 +88,7 @@ def get_tasks_on_date_date(message):
 @bot.callback_query_handler(func=lambda call: call.data == 'change_data')
 def save_btn(call):
     message = call.message
-    keyboard = telebot.types.InlineKeyboardMarkup()
+    keyboard = telebot.types.InlineKeyboardMarkup(row_width=2)
     button_text = telebot.types.InlineKeyboardButton(text="Изменить текст",
                                                      callback_data='change_text')
     button_checked = telebot.types.InlineKeyboardButton(text="Отметить выполненным",
@@ -99,7 +101,7 @@ def save_btn(call):
 @bot.callback_query_handler(func=lambda call: call.data == 'change_text')
 def change_text(call):
     message = call.message
-    bot.send_message(message.chat.id,"Выберите номер задачи из списка выше и напишите исправленный текст\n<i>Формат</i>\nНомер задачи\nТекст",parse_mode="HTML")
+    bot.send_message(message.chat.id,"Выберите номер задачи из списка выше и напишите исправленный текст\n<b><i>Формат</i></b>\nНомер задачи\nТекст",parse_mode="HTML")
     bot.register_next_step_handler(message,edit_text_task)
 
 def edit_text_task(message):
@@ -153,13 +155,13 @@ def delete_tasks_on_date_date(message):
 
 def dd_run_out(chat_id, task):
     task_desc = task['description']
-    bot.send_message(chat_id,f"Кажется, ваша задача <i>{task_desc}</i> истекла...\nНичего страшного, она продлена на 1 день, но кое-кому пора ее выполнить!",parse_mode="HTML")
+    bot.send_message(chat_id,f"Кажется, ваша задача \n<i>{task_desc}</i>\n истекла...\nНичего страшного, она продлена на 1 день, но кое-кому пора ее выполнить!",parse_mode="HTML")
 
 def send_reminder(text,chat_id):
     bot.send_message(chat_id,f"Помнится, некоторое время назад вы сказали сами себе\n\n<b>{text}</b>\n\nПора выполнить обещание!",parse_mode="HTML")
 
 def remind_task(chat_id,task_desc):
-    bot.send_message(chat_id,f"До дедлайна вашей задачи <i>{task_desc}</i> осталось всего 3 часа\nЗнайте, рак на горе уже свистнул, самое время взяться за дело!",parse_mode="HTML")
+    bot.send_message(chat_id,f"До дедлайна вашей задачи \n<i>{task_desc}</i>\n осталось всего 3 часа\nЗнайте, рак на горе уже свистнул, самое время взяться за дело!",parse_mode="HTML")
 
 app = Flask(__name__)
 
