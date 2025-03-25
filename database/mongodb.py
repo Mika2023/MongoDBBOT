@@ -191,7 +191,7 @@ def read_task(task_id):
     tasks = []
     
     for key in redis_client.scan_iter("task:*"):
-        task = redis_client.hgetall(key)
+        task = redis_client.get(key)
         task_dict = {}
         for key_task,value in task.items():
             task_dict[key_task.decode('utf-8')] = value.decode('utf-8')
