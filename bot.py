@@ -33,7 +33,11 @@ def add_tasks_to_plan(message):
            return
        description = dif_task[0]
        deadline = dif_task[1]
+       if not check_date_for_setting(deadline):
+            bot.send_message(message.chat.id,"Проверьте дату, пока что машину времени не изобрели..)")
+            return
        tasks_arr.append({'description':description,'deadline':deadline,'chat_id':message.chat.id,'checked':'False'})
+
     res = add_tasks_list(tasks_arr)
     if res: bot.send_message(message.chat.id,"Оооооо, очень крутые задачи, а еще...\n<b>Они успешно добавлены!</b>",parse_mode='HTML')
     else:bot.send_message(message.chat.id,"Какая-то хрень произошла с сервером, попробуйте снова пжпжпж")
@@ -50,6 +54,9 @@ def set_reminder_text(message):
            return
     description = dif_rem[0]
     deadline = dif_rem[1]
+    if not check_date_for_setting(deadline):
+            bot.send_message(message.chat.id,"Проверьте дату, пока что машину времени не изобрели..)")
+            return
     res = set_reminder(message.chat.id,deadline,description)
     if res: bot.send_message(message.chat.id,"Аааага, запомнилось!\n<i>Вы получать +15 социальных кредитов и кошка жену за это</i>",parse_mode="HTML")
     else: bot.send_message(message.chat.id,"Плакать охота, что-то пошло не так, повторите позже)")
@@ -169,7 +176,7 @@ def send_reminder(text,chat_id):
     bot.send_message(chat_id,f"Помнится, некоторое время назад вы сказали сами себе\n\n<b>{text}</b>\n\nПора выполнить обещание!",parse_mode="HTML")
 
 def remind_task(chat_id,task_desc):
-    bot.send_message(chat_id,f"До дедлайна вашей задачи \n<i>{task_desc}</i>\n осталось всего 3 часа\nЗнайте, рак на горе уже свистнул, самое время взяться за дело!",parse_mode="HTML")
+    bot.send_message(chat_id,f"До дедлайна вашей задачи \n<i>{task_desc}</i>\n осталось меньше 3 часов\nЗнайте, рак на горе уже свистнул, самое время взяться за дело!",parse_mode="HTML")
 
 app = Flask(__name__)
 

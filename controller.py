@@ -135,3 +135,8 @@ def get_date_tasks(date,chat_id):
         tasks_ids_arr.append([i,task['description'],task['deadline'],task['chat_id']])
         i+=1
     return res_str
+
+def check_date_for_setting(date_str):
+    date_now = datetime.now()
+    date_tar = datetime.strptime(date_str,"%d.%m.%Y %H:%M")
+    return date_now<date_tar
