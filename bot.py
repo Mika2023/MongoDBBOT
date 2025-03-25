@@ -140,8 +140,7 @@ def edit_checked(message):
         return
     
     res = set_checked(int(dif_text[0]))
-    if res: bot.send_message(message.chat.id,"Выполнено, кэп!")
-    else: bot.send_message(message.chat.id,"Задача не изменена(")
+    bot.send_message(message.chat.id,"Выполнено, кэп!")
 
 @bot.callback_query_handler(func=lambda call: call.data == 'delete_task_bot')
 def delete_task_bot(call):
@@ -156,8 +155,7 @@ def delete_task_bot_num(message):
         return
     
     res = delete_concrete_task(int(dif_text[0]))
-    if res: bot.send_message(message.chat.id,"Выполнено, кэп!")
-    else: bot.send_message(message.chat.id,"Задача не удалена(")
+    bot.send_message(message.chat.id,"Выполнено, кэп!")
 
 
 @bot.message_handler(commands=["delete_tasks_on_date"])
