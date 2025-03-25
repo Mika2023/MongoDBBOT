@@ -75,7 +75,7 @@ def get_tasks_on_date_bot(message):
 
 def get_tasks_on_date_date(message):
     # try:
-        bot.send_message(message.chat.id,"</i>Сервер шаманит, подождите чутка</i>",parse_mode="HTML")
+        bot.send_message(message.chat.id,"Сервер шаманит, подождите чутка")
         res = get_date_tasks(message.text,message.chat.id)
         res = f"Ваш список мечты на дату: {message.text}\n"+res
         keyboard = telebot.types.InlineKeyboardMarkup()
