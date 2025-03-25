@@ -1,5 +1,6 @@
 
 # from database.celery_bot import app
+from datetime import datetime, timedelta
 import json
 from pymongo import MongoClient
 import redis
@@ -118,13 +119,30 @@ def delete_arr_tasks(tasks_arr):
         return False
 
 def delete_task_params(description,date,chat_id):
-    result = tasks_collection.delete_one({'deadline':date,'chat_id':chat_id,'description':description})
-
+    # result = tasks_collection.delete_one({'deadline':date,'chat_id':chat_id,'description':description})
+    target_date = datetime.strftime(date,"%d.%m.%Y %H:%M")
+    start_date = datetime(target_date.year, target_date.month, target_date.day)
+    end_date = start_date + timedelta(days=1)
+    
+    # Удаляем и получаем количество
+    result = tasks_collection.delete_many({
+        "deadline": {
+            "$gte": start_date.strftime("%d.%m.%Y %H:%M"),
+            "$lt": end_date.strftime("%d.%m.%Y %H:%M")
+        },
+        "chat_id":chat_id,
+        "description":description
+    })
     if result.deleted_count > 0:  # Используем deleted_count
         # Redis
-        redis_key = f"task:{date}:{chat_id}:{description}"
-        redis_client.delete(redis_key)
-        print(f"Данные удалены в Redis для ключа: {redis_key}")
+        for key in redis_client.scan_iter("task:*"):
+            task = redis_client.hgetall(key)
+            task_dict = {}
+            for key_task,value in task.items():
+                task_dict[key_task.decode('utf-8')] = value.decode('utf-8')
+            if task_dict['deadline'].startswith(date) and task_dict['description']==description and task_dict['chat_id']==chat_id:
+                redis_client.delete(key)
+        print(f"Данные удалены в Redis для ключа: {date}")
         return True
     else:
         print(f"Задача с дедлайном {date} не найдена.")
