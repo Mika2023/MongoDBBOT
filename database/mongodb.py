@@ -220,7 +220,7 @@ def read_date_tasks(date,chat_id):
         task_dict = {}
         for key_task,value in task.items():
             task_dict[key_task.decode('utf-8')] = value.decode('utf-8')
-        if task_dict['deadline'].startswith(date):
+        if 'deadline' in task_dict.keys() and task_dict['deadline'].startswith(date):
             tasks.append(task_dict)
     if tasks: return tasks
     

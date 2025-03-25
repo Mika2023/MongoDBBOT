@@ -35,7 +35,7 @@ def add_tasks_to_plan(message):
        deadline = dif_task[1]
        tasks_arr.append({'description':description,'deadline':deadline,'chat_id':message.chat.id,'checked':'False'})
     res = add_tasks_list(tasks_arr)
-    if res: bot.send_message(message.chat.id,"Оооооо, очень крутые задачи, а еще...\n\n<b>Они успешно добавлены!</b>",parse_mode='HTML')
+    if res: bot.send_message(message.chat.id,"Оооооо, очень крутые задачи, а еще...\n<b>Они успешно добавлены!</b>",parse_mode='HTML')
     else:bot.send_message(message.chat.id,"Какая-то хрень произошла с сервером, попробуйте снова пжпжпж")
 
 @bot.message_handler(commands=["set_reminder"])
@@ -56,6 +56,7 @@ def set_reminder_text(message):
 
 @bot.message_handler(commands=["get_all_tasks"])
 def print_all_tasks(message):
+    bot.send_message(message.chat.id,"</i>Сервер шаманит, подождите чутка</i>",parse_mode="HTML")
     res = get_all_tasks(message.chat.id)
     if res=="":
         bot.send_message(message.chat.id,"<i>О-Оуууууу...</i>\nУ вас нет никаких задач. Плохо это или хорошо?",parse_mode="HTML")
@@ -74,6 +75,7 @@ def get_tasks_on_date_bot(message):
 
 def get_tasks_on_date_date(message):
     # try:
+        bot.send_message(message.chat.id,"</i>Сервер шаманит, подождите чутка</i>",parse_mode="HTML")
         res = get_date_tasks(message.text,message.chat.id)
         res = f"Ваш список мечты на дату: {message.text}\n"+res
         keyboard = telebot.types.InlineKeyboardMarkup()
@@ -110,8 +112,9 @@ def edit_text_task(message):
         bot.send_message(message.chat.id,"Кажется, вы написали не тот формат(")
         return
     
-    edit_text(int(dif_text[0]),dif_text[1])
-    bot.send_message(message.chat.id,"Задача успешно отредактирована!")
+    res = edit_text(int(dif_text[0]),dif_text[1])
+    if res: bot.send_message(message.chat.id,"Задача успешно отредактирована!")
+    else: bot.send_message(message.chat.id,"Все осталось таким же(")
 
 @bot.callback_query_handler(func=lambda call: call.data == 'change_check')
 def change_check(call):
@@ -125,8 +128,9 @@ def edit_checked(message):
         bot.send_message(message.chat.id,"Кажется, вы написали не тот формат(")
         return
     
-    set_checked(int(dif_text[0]))
-    bot.send_message(message.chat.id,"Выполнено, кэп!")
+    res = set_checked(int(dif_text[0]))
+    if res: bot.send_message(message.chat.id,"Выполнено, кэп!")
+    else: bot.send_message(message.chat.id,"Задача не изменена(")
 
 @bot.callback_query_handler(func=lambda call: call.data == 'delete_task_bot')
 def delete_task_bot(call):
@@ -140,8 +144,9 @@ def delete_task_bot_num(message):
         bot.send_message(message.chat.id,"Кажется, вы написали не тот формат(")
         return
     
-    delete_concrete_task(int(dif_text[0]))
-    bot.send_message(message.chat.id,"Выполнено, кэп!")
+    res = delete_concrete_task(int(dif_text[0]))
+    if res: bot.send_message(message.chat.id,"Выполнено, кэп!")
+    else: bot.send_message(message.chat.id,"Задача не удалена(")
 
 
 @bot.message_handler(commands=["delete_tasks_on_date"])
@@ -150,8 +155,9 @@ def delete_tasks_on_date(message):
     bot.register_next_step_handler(message,delete_tasks_on_date_date)
 
 def delete_tasks_on_date_date(message):
-    delete_on_date(message.text,message.chat.id)
-    bot.send_message(message.chat.id,f"Удалены все задачи на дату {message.text}")
+    res = delete_on_date(message.text,message.chat.id)
+    if res: bot.send_message(message.chat.id,f"Удалены все задачи на дату {message.text}")
+    else: bot.send_message(message.chat.id,"Задачи не удалены(")
 
 def dd_run_out(chat_id, task):
     task_desc = task['description']
