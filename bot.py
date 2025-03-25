@@ -5,7 +5,7 @@ import flask
 from flask import Flask,app,request
 from controller import *
 
-mytoken = "7612716429:AAH1RMJeUJGJC6_kiB7T-R2RkRxmPGD1G5k"
+mytoken = os.getenv("TELEGRAM_TOKEN")
 bot = telebot.TeleBot(mytoken,threaded=False)
 
 @bot.message_handler(commands=["start"])
