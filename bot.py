@@ -125,8 +125,7 @@ def edit_text_task(message):
         return
     
     res = edit_text(int(dif_text[0]),dif_text[1])
-    if res: bot.send_message(message.chat.id,"Задача успешно отредактирована!😎")
-    else: bot.send_message(message.chat.id,"Все осталось таким же(")
+    bot.send_message(message.chat.id,"Задача успешно отредактирована!😎")
 
 @bot.callback_query_handler(func=lambda call: call.data == 'change_check')
 def change_check(call):
