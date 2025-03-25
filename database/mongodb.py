@@ -216,13 +216,15 @@ def read_date_tasks(date,chat_id):
     tasks = []
     
     for key in redis_client.scan_iter("task:*"):
-        print(key)
-        task = json.loads(redis_client.get(key).decode('utf-8'))
+        task = list(redis_client.get(key).decode('utf-8'))
+        print(task)
         task_dict = {}
-        for key_task,value in task.items():
-            task_dict[key_task.decode('utf-8')] = value.decode('utf-8')
-        if 'deadline' in task_dict.keys() and 'chat_id' in task_dict.keys() and task_dict['deadline'].startswith(date) and task_dict['chat_id']==chat_id:
-            tasks.append(task_dict)
+        # for key_task,value in task.items():
+        #     task_dict[key_task.decode('utf-8')] = value.decode('utf-8')
+        
+        # if 'deadline' in task_dict.keys() and 'chat_id' in task_dict.keys() and task_dict['deadline'].startswith(date) and task_dict['chat_id']==chat_id:
+        #     tasks.append(task_dict)
+        break
     if tasks: return tasks
     
     results = [str(doc['_id']) for doc in tasks_collection.find({
