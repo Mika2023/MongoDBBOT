@@ -56,7 +56,7 @@ def set_reminder_text(message):
 
 @bot.message_handler(commands=["get_all_tasks"])
 def print_all_tasks(message):
-    bot.send_message(message.chat.id,"</i>Сервер шаманит, подождите чутка</i>",parse_mode="HTML")
+    bot.send_message(message.chat.id,"Сервер шаманит, подождите чутка")
     res = get_all_tasks(message.chat.id)
     if res=="":
         bot.send_message(message.chat.id,"<i>О-Оуууууу...</i>\nУ вас нет никаких задач. Плохо это или хорошо?",parse_mode="HTML")
@@ -151,13 +151,12 @@ def delete_task_bot_num(message):
 
 @bot.message_handler(commands=["delete_tasks_on_date"])
 def delete_tasks_on_date(message):
-    bot.send_message(message.chat.id,"Ждем от вас дату, напомню формат:\n<i>дд.мм.гггг</i>\nВсе просто)",parse_mode="HTML")
+    bot.send_message(message.chat.id,"Ждем от вас дату, напоминаем формат:\n<i>дд.мм.гггг</i>\nВсе просто)",parse_mode="HTML")
     bot.register_next_step_handler(message,delete_tasks_on_date_date)
 
 def delete_tasks_on_date_date(message):
     res = delete_on_date(message.text,message.chat.id)
-    if res: bot.send_message(message.chat.id,f"Удалены все задачи на дату {message.text}")
-    else: bot.send_message(message.chat.id,"Задачи не удалены(")
+    bot.send_message(message.chat.id,f"Удалены все задачи на дату {message.text}")
 
 def dd_run_out(chat_id, task):
     task_desc = task['description']
