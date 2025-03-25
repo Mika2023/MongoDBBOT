@@ -127,8 +127,7 @@ def delete_task_params(description,date,chat_id):
     # Удаляем и получаем количество
     result = tasks_collection.delete_many({
         "deadline": {
-            "$gte": start_date.strftime("%d.%m.%Y %H:%M"),
-            "$lt": end_date.strftime("%d.%m.%Y %H:%M")
+            {"$regex": f"^{date}"}
         },
         "chat_id":chat_id,
         "description":description
