@@ -216,8 +216,8 @@ def read_date_tasks(date,chat_id):
     tasks = []
     
     for key in redis_client.scan_iter("task:*"):
-        task = redis_client.get(key).decode('utf-8')
-        print(task,type(task))
+        print(key)
+        task = json.loads(redis_client.get(key).decode('utf-8'))
         task_dict = {}
         for key_task,value in task.items():
             task_dict[key_task.decode('utf-8')] = value.decode('utf-8')
