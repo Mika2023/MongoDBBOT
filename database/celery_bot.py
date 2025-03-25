@@ -1,10 +1,9 @@
-import os
 from celery import Celery
 
 app = Celery(
     'celery_bot',
-    broker=os.getenv("REDIS_URL"),
-    backend=os.getenv("REDIS_URL"),
+    broker='rediss://:AaA5AAIjcDFhZjYxZmRhYzYxMDA0NGE0YmNkZTQ5NDU4MjNkYWZkZnAxMA@fast-crawdad-41017.upstash.io:6379?ssl_cert_reqs=required',
+    backend='rediss://:AaA5AAIjcDFhZjYxZmRhYzYxMDA0NGE0YmNkZTQ5NDU4MjNkYWZkZnAxMA@fast-crawdad-41017.upstash.io:6379?ssl_cert_reqs=required',
     include=['database.tasks']
 )
 
