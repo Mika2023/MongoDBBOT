@@ -47,6 +47,7 @@ def read_task_task(task_id):
 
 def decode_redis_data(redis_dict):
     """Преобразует словарь с bytes-ключами и значениями в обычный dict."""
+    if type(redis_dict)==list: return redis_dict if len(redis_dict)>1 else redis_dict[0]
     decoded = {}
     for key, value in redis_dict.items():
         # Декодируем ключ и значение из bytes в str
