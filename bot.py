@@ -77,6 +77,9 @@ def get_tasks_on_date_date(message):
     # try:
         bot.send_message(message.chat.id,"Сервер шаманит, подождите чутка")
         res = get_date_tasks(message.text,message.chat.id)
+        if res=="":
+            bot.send_message(message.chat.id,"<i>О-Оуууууу...</i>\nУ вас нет никаких задач. Плохо это или хорошо?",parse_mode="HTML")
+            return
         res = f"Ваш список мечты на дату: {message.text}\n"+res
         keyboard = telebot.types.InlineKeyboardMarkup()
         button_change = telebot.types.InlineKeyboardButton(text="Изменить",
