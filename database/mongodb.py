@@ -293,7 +293,9 @@ def read_date_tasks(date,chat_id):
     })
     for doc in results:
         doc['_id'] = str(doc['_id'])
+    print(results)
     results = list(results)
+    print(results)
     if results:
         print("Данные получены из MongoDB")
 
