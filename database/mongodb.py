@@ -207,38 +207,18 @@ def read_data(chat_id):
         return None
 
 def read_task(task_id):
-    tasks=[]
 
-    for key in redis_client.scan_iter("task:*"):
-        if redis_client.type(key)==b'hash':
+    tasks = []
+    key = f'task:{task_id}'
+    if redis_client.type(key)==b'hash':
             task = redis_client.hgetall(key)
-        else: task = redis_client.get(key)
-        task = task.decode('utf-8')
-        json_str = task.replace("'", '"')
-        try:    
-            task = json.loads(json_str)
-        except json.JSONDecodeError:
-            # Вариант 2: Используем literal_eval как запасной вариант
-            task = literal_eval(task)
-        if type(task)==list and task[0][0]!='{':
-            for ids in task:
-                redis_key = f'task:{ids}'
-                if redis_client.type(redis_key)==b'hash':
-                    task = redis_client.hgetall(redis_key)
-                else: task = redis_client.get(redis_key)
-                task_dict = {}
-                for key_task,value in task.items():
-                    task_dict[key_task.decode('utf-8')] = value.decode('utf-8')
-                if '_id' in task and task['_id']==task_id:
-                    tasks.append(task_dict)
-            break
-        elif type(task)==dict:
-            task_dict = {}
-            for key_task,value in task.items():
-                task_dict[key_task.decode('utf-8')] = value.decode('utf-8')
-            if '_id' in task and task['_id']==task_id:
-                tasks.append(task_dict)
-    if tasks: return tasks
+    else: task = redis_client.get(key)
+    task_dict = {}
+    for key_task,value in task.items():
+            task_dict[key_task.decode('utf-8')] = value.decode('utf-8')
+    if '_id' in task_dict.keys() and task_dict['_id']==task_id:
+            tasks.append(task_dict)
+    if tasks: return tasks 
 
     # Если данных нет в Redis, загружаем из MongoDB
     results = list(tasks_collection.find({'task': task_id},{'_id': 0}))
