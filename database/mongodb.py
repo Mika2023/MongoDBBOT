@@ -287,15 +287,11 @@ def read_date_tasks(date,chat_id):
     #     break
     # if tasks: return tasks
     
-    results = tasks_collection.find({
+    results = list(tasks_collection.find({
     "deadline": {"$regex": f"^{date}"},
     "chat_id": chat_id
-    })
-    for doc in results:
-        doc['_id'] = str(doc['_id'])
-    print(results)
-    results = list(results)
-    print(results)
+    },{'_id': 0}))
+    
     if results:
         print("Данные получены из MongoDB")
 
