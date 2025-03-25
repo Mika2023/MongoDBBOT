@@ -7,7 +7,7 @@ import redis
 from bson.objectid import ObjectId  # для idшников в бд
 
 # Подключение к MongoDB
-mongo_client = MongoClient('mongodb://localhost:27017/')
+mongo_client = MongoClient('mongodb://mongo:MoumIPCDVnbgIkjltvuKHNDUJVdhZqBR@mongodb.railway.internal:27017')
 db = mongo_client['TelegramBotDB']
 tasks_collection = db['tasks']
 
