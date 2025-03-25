@@ -224,7 +224,7 @@ def read_date_tasks(date,chat_id):
             tasks.append(task_dict)
     if tasks: return tasks
     
-    results = list(tasks_collection.find({"&and":[{'deadline':date},{'chat_id':chat_id}]}))
+    results = list(tasks_collection.find({'deadline':date,'chat_id':chat_id}))
     if results:
         print("Данные получены из MongoDB")
 
