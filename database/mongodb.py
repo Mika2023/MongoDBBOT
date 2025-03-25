@@ -163,7 +163,9 @@ def read_data(chat_id):
     tasks = []
     
     for key in redis_client.scan_iter("task:*"):
-        task = redis_client.hgetall(key)
+        if redis_client.type(key)==b'hash':
+            task = redis_client.hgetall(key)
+        else: task = redis_client.get(key)
         task_dict = {}
         for key_task,value in task.items():
             task_dict[key_task.decode('utf-8')] = value.decode('utf-8')
