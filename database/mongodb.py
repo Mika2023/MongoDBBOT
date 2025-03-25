@@ -177,7 +177,7 @@ def read_data(chat_id):
         print("Данные получены из MongoDB")
 
         # Сохраняем данные в Redis
-        redis_client.set(redis_key, str(results))  # Сохраняем как строку
+        redis_client.hset(redis_key, str(results))  # Сохраняем как строку
         redis_client.expire(redis_key, 3600)  # Устанавливаем время жизни ключа (1 час)
 
         return results
@@ -191,7 +191,7 @@ def read_task(task_id):
     tasks = []
     
     for key in redis_client.scan_iter("task:*"):
-        task = redis_client.get(key)
+        task = redis_client.hgetall(key)
         task_dict = {}
         for key_task,value in task.items():
             task_dict[key_task.decode('utf-8')] = value.decode('utf-8')
@@ -205,7 +205,7 @@ def read_task(task_id):
         print("Данные получены из MongoDB")
 
         # Сохраняем данные в Redis
-        redis_client.set(redis_key, str(results))  # Сохраняем как строку
+        redis_client.hset(redis_key, str(results))  # Сохраняем как строку
 
         return results
     else:
@@ -244,7 +244,7 @@ def read_date_tasks(date,chat_id):
         print("Данные получены из MongoDB")
 
         # Сохраняем данные в Redis
-        redis_client.set(redis_key, str(results))  # Сохраняем как строку
+        redis_client.hset(redis_key, str(results))  # Сохраняем как строку
 
         return results
     else:
