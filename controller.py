@@ -100,7 +100,7 @@ def get_all_tasks(chat_id):
     res_str = ""
     i = 1
     for task in tasks:
-        if task['checked']=='False': 
+        if 'checked' in task.keys() and task['checked']=='False': 
             res_str+=f"{i}. ❌{task['description']}\n\t\t⏱️Времени осталось - "
             try:
                 deadline = datetime.strptime(task['deadline'],"%d.%m.%Y %H:%M")
@@ -124,7 +124,7 @@ def get_date_tasks(date,chat_id):
     i = 1
     tasks_ids_arr.clear()
     for task in tasks_str:
-        if task['checked']=='False': 
+        if 'checked' in task.keys() and task['checked']=='False': 
             res_str+=f"{i}. ❌{task['description']}\n\t\t⏱️Времени осталось - "
             try:
                 deadline = datetime.strptime(task['deadline'],"%d.%m.%Y %H:%M")

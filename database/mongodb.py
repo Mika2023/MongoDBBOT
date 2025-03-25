@@ -236,8 +236,6 @@ def read_task(task_id):
 
 def read_date_tasks(date,chat_id):
     tasks = []
-
-    tasks = []
     
     for key in redis_client.scan_iter("task:*"):
         if redis_client.type(key)==b'hash':
