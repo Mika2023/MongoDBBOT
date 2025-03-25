@@ -10,7 +10,7 @@ bot = telebot.TeleBot(mytoken,threaded=False)
 
 @bot.message_handler(commands=["start"])
 def start(message):
-    bot.send_message(message.chat.id,"Приветствую, новый пользователь! Я - бот <i>Планнер твоей мечты</i>\nЧтобы получить помощь по командам, нажми /help", parse_mode="HTML")
+    bot.send_message(message.chat.id,"Приветствую, новый пользователь! Я - бот ✨<i>Планнер твоей мечты</i>✨\nЧтобы получить помощь по командам, нажми /help", parse_mode="HTML")
 
 @bot.message_handler(commands=["help"])
 def help(message):
